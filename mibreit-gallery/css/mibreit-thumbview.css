@@ -1,0 +1,19 @@
+.mibreit-thumbElement {
+    position: relative;
+    padding: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 84px;
+    height: 84px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.mibreit-thumbElement img {
+    padding: 0px;
+}

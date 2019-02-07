@@ -1,0 +1,30 @@
+.mibreit-slideshow-highlight {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	background-color: #000000;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.mibreit-imageElement {
+	position: absolute;
+	padding: 0px;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.mibreit-imageElement img {
+	position: relative;
+	padding: 0px;
+	margin: 0px;
+}
+
+.mibreit-imageElement h3 {
+	margin-left: -4000px;
+}
