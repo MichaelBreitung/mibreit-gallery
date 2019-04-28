@@ -16,11 +16,10 @@ import {
 const HOVER_ANIMATION_TIME = 400;
 
 export default class Gallery {
-
   constructor() {
     this._slideshowContainer = ".mibreit-slideshow";
     this._thumbviewContainer = ".mibreit-thumbs";
-    this._titleContainer = undefined;
+    this._titleContainer = "";
     this._thumbviewNext = ".mibreit-thumbview-next";
     this._thumbviewPrevious = ".mibreit-thumbview-previous";
     this._slideshowNext = ".mibreit-slideshow-next";
@@ -69,17 +68,23 @@ export default class Gallery {
     if (this._showThumbview) {
       this._mibreitThumbview = new Thumbview();
 
-      if (this._mibreitThumbview.init({
+      if (
+        this._mibreitThumbview.init({
           thumbClickCallback: this._thumbClickCallback,
           thumbviewContainer: this._thumbviewContainer
-        })) {
-        $(this._thumbviewContainer + " .mibreit-thumbElement").wrapAll("<div class='mibreit-thumbs-scroller' />");
+        })
+      ) {
+        $(this._thumbviewContainer + " .mibreit-thumbElement").wrapAll(
+          "<div class='mibreit-thumbs-scroller' />"
+        );
 
         this._mibreitScroller = new ThumbviewScroller();
-        if (this._mibreitScroller.init({
+        if (
+          this._mibreitScroller.init({
             scroller: this.thumbviewContainer + " .mibreit-thumbs-scroller",
             ...config
-          })) {
+          })
+        ) {
           $(this._thumbviewPrevious).bind("click", function () {
             self._mibreitScroller.scrollLeft(6);
           });
@@ -93,13 +98,15 @@ export default class Gallery {
 
     this._mibreitSlideshow = new Slideshow();
 
-    if (this._mibreitSlideshow.init({
+    if (
+      this._mibreitSlideshow.init({
         imageScaleMode: "fitaspect",
         interval: 4000,
         imageChangedCallback: this._imageChangedCallback,
         slideshowHighlighting: this._slideshowHighlighting,
         ...config
-      })) {
+      })
+    ) {
       $(this._slideshowContainer).bind("mouseenter", function () {
         $(self._slideshowNext).animate({
             opacity: 0.4
@@ -141,9 +148,9 @@ export default class Gallery {
     return success;
   }
 
-  _thumbClickCallback = (id) => {
+  _thumbClickCallback = id => {
     this._mibreitSlideshow.showImage(id);
-  }
+  };
 
   _imageChangedCallback = (id, title) => {
     if (this._mibreitScroller !== undefined) {
@@ -152,7 +159,7 @@ export default class Gallery {
     if (this._titleContainer !== undefined) {
       $(this._titleContainer).html("<h3>" + title + "</h3>");
     }
-  }
+  };
 
   _containerClickedCallback = (relativeX, containerWidth) => {
     if (relativeX < containerWidth / 2) {
@@ -160,9 +167,9 @@ export default class Gallery {
     } else {
       this._mibreitSlideshow.showNextImage();
     }
-  }
+  };
 
-  _keyDownCallback = (key) => {
+  _keyDownCallback = key => {
     if (key == 37) {
       // left arrow
       this._mibreitSlideshow.showPreviousImage();
@@ -170,5 +177,5 @@ export default class Gallery {
       // right arrow
       this._mibreitSlideshow.showNextImage();
     }
-  }
+  };
 }
