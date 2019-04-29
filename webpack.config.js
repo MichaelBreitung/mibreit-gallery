@@ -1,6 +1,7 @@
 var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+var FileManagerPlugin = require('filemanager-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = [{
@@ -68,6 +69,13 @@ module.exports = [{
           }],
         },
         canPrint: true
+      }),
+      new FileManagerPlugin({
+        onEnd: {
+          delete: [
+            path.resolve(__dirname, 'mibreit-gallery/css/main.js')
+          ]
+        }
       })
     ]
   }
