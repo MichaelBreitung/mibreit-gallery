@@ -50,6 +50,18 @@ module.exports = [{
     },
     plugins: [
       new ExtractTextPlugin("mibreitGallery.css"),
+      new OptimizeCssAssetsPlugin({
+        assetNameRegExp: /\.css$/g,
+        cssProcessor: require('cssnano'),
+        cssProcessorPluginOptions: {
+          preset: ['default', {
+            discardComments: {
+              removeAll: true
+            }
+          }],
+        },
+        canPrint: true
+      })
     ]
   }
 ];
