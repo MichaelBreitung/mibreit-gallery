@@ -1,6 +1,7 @@
 var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = [{
     mode: "production",
@@ -23,6 +24,12 @@ module.exports = [{
         }
       }]
     },
+    plugins: [
+      new CopyWebpackPlugin([{
+        from: 'src/images',
+        to: 'images'
+      }])
+    ],
     externals: {
       jquery: 'jQuery'
     }
