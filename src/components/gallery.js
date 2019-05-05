@@ -93,11 +93,12 @@ export default class Gallery {
 
         this._mibreitScroller = new ThumbviewScroller();
         if (
-          this._mibreitScroller.init({
-            scroller: this.thumbviewContainer + " .mibreit-thumbs-scroller",
+          !this._mibreitScroller.init({
+            scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
             ...config
           })
         ) {
+
           $(this._thumbviewPrevious).bind("click", function () {
             self._mibreitScroller.scrollLeft(6);
           });

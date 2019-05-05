@@ -20,7 +20,7 @@ export default class ThumbviewScroller {
   }
 
   init(config) {
-    let success = false;
+    let error_code = 0;
 
     if (isString(config.thumbviewContainer) && isString(config.scroller)) {
       let thumbContainers = $(config.thumbviewContainer + " .mibreit-thumbElement");
@@ -44,9 +44,8 @@ export default class ThumbviewScroller {
         this._allowMovement = true;
         this._midPositionId = Math.floor(this._nrVisibleImages / 2);
       }
-      success = true;
     }
-    return success;
+    return error_code;
   }
 
   /**
