@@ -23,7 +23,7 @@ export default class ThumbviewScroller {
     let success = false;
 
     if (isString(config.thumbviewContainer) && isString(config.scroller)) {
-      thumbContainers = $(config.thumbviewContainerClassName + " .mibreit-thumbElement");
+      let thumbContainers = $(config.thumbviewContainer + " .mibreit-thumbElement");
       this.scroller = $(config.scroller);
 
       this._stepSize = thumbContainers.outerWidth(true);

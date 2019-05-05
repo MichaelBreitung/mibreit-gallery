@@ -4,6 +4,7 @@ import {
 
 import Slideshow from "./components/slideshow";
 import Gallery from "./components/gallery";
+import ImageLoader from "./components/loader";
 
 export function createSlideshow(config) {
   if (isUndefined(config)) {
@@ -12,8 +13,9 @@ export function createSlideshow(config) {
 
   const slideshow = new Slideshow();
 
-  if (!slideshow.init(config)) {
-    throw Error("createSlideshow Error: invalid config");
+  const error = slideshow.init(config);
+  if (error) {
+    throw Error("createSlideshow Error: invalid config - Error Code: " + error);
   }
 
   return slideshow;
@@ -26,9 +28,22 @@ export function createGallery(config) {
 
   const gallery = new Gallery();
 
-  if (!gallery.init(config)) {
-    throw Error("createGallery Error: invalid config");
+  const error = gallery.init(config);
+  if (error) {
+    throw Error("createGallery Error: invalid config - Error Code: " + error);
   }
 
   return gallery;
 }
+
+// export function loadImages(config) {
+//   if (isUndefined(config)) {
+//     throw Error("loadImages Error: No Config was provided");
+//   }
+
+//   const imageLoader = new ImageLoader();
+
+//   if (!imageLoader.init(config)) {
+//     throw Error("imageLoader Error: invalid config");
+//   }
+// }

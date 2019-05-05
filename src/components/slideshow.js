@@ -17,7 +17,7 @@ const BASE_Z_INDEX = 10;
 const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 
 export default class Slideshow {
-  constructor(config) {
+  constructor() {
     // default initialization
     this._currentIndex = 0;
     this._imageContainers = [];
@@ -30,7 +30,7 @@ export default class Slideshow {
   }
 
   init(config) {
-    let success = false;
+    let error_code = 0;
     if (isString(config.slideshowContainer)) {
       // those selectors ensure that we only have the containers and images that are connected
       // as parent - child
@@ -93,11 +93,13 @@ export default class Slideshow {
 
         // make sure the title callback is called
         this._imageChanged();
-
-        success = true;
+      } else {
+        error_code = 202;
       }
+    } else {
+      error_code = 201;
     }
-    return success;
+    return error_code;
   }
 
   start() {

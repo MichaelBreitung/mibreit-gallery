@@ -17,6 +17,7 @@ const HOVER_ANIMATION_TIME = 400;
 
 export default class Gallery {
   constructor() {
+    // default values are used if config does not provide alternative values
     this._slideshowContainer = ".mibreit-slideshow";
     this._thumbviewContainer = ".mibreit-thumbs";
     this._titleContainer = "";
@@ -33,28 +34,40 @@ export default class Gallery {
   }
 
   init(config) {
-    let success = false;
+    let error_code = 0;
     const self = this;
     if (isString(config.slideshowContainer)) {
       this._slideshowContainer = config.slideshowContainer;
+    } else {
+      config.slideshowContainer = this._slideshowContainer;
     }
     if (isString(config.thumbviewContainer)) {
       this._thumbviewContainer = config.thumbviewContainer;
+    } else {
+      config.thumbviewContainer = this._thumbviewContainer;
     }
     if (isBoolean(config.showThumbView)) {
       this._showThumbview = config.showThumbView;
     }
     if (isString(config.thumbviewNext)) {
       this._thumbviewNext = config.thumbviewNext;
+    } else {
+      config.thumbviewNext = this._thumbviewNext;
     }
     if (isString(config.thumbviewPrevious)) {
       this._thumbviewPrevious = config.thumbviewPrevious;
+    } else {
+      config.thumbviewPrevious = this._thumbviewPrevious;
     }
     if (isString(config.slideshowNext)) {
       this._slideshowNext = config.slideshowNext;
+    } else {
+      config.slideshowNext = this._slideshowNext;
     }
     if (isString(config.slideshowPrevious)) {
       this._slideshowPrevious = config.slideshowPrevious;
+    } else {
+      config.slideshowPrevious = this._slideshowPrevious;
     }
     if (isString(config.titleContainer)) {
       this._titleContainer = config.titleContainer;
@@ -98,14 +111,16 @@ export default class Gallery {
 
     this._mibreitSlideshow = new Slideshow();
 
+    error_code = this._mibreitSlideshow.init({
+      imageScaleMode: "fitaspect",
+      interval: 4000,
+      imageChangedCallback: this._imageChangedCallback,
+      slideshowHighlighting: this._slideshowHighlighting,
+      ...config
+    });
+
     if (
-      this._mibreitSlideshow.init({
-        imageScaleMode: "fitaspect",
-        interval: 4000,
-        imageChangedCallback: this._imageChangedCallback,
-        slideshowHighlighting: this._slideshowHighlighting,
-        ...config
-      })
+      error_code === 0
     ) {
       $(this._slideshowContainer).bind("mouseenter", function () {
         $(self._slideshowNext).animate({
@@ -142,10 +157,9 @@ export default class Gallery {
       $(document).bind("keydown", function (event) {
         self._keyDownCallback(event.which);
       });
-      success = true;
     }
 
-    return success;
+    return error_code;
   }
 
   _thumbClickCallback = id => {
