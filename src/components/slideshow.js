@@ -61,8 +61,8 @@ export default class Slideshow {
           this._interval = config.interval;
         }
 
-        if (!isUndefined(config._imageChangedCallback)) {
-          this._imageChangedCallback = config._imageChangedCallback;
+        if (!isUndefined(config.imageChangedCallback)) {
+          this._imageChangedCallback = config.imageChangedCallback;
         }
 
         if (isBoolean(config.slideshowHighlighting) && config.slideshowHighlighting === true) {
