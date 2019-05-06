@@ -45,8 +45,8 @@ export default class Slideshow {
         }
 
         let scaleMode = "none";
-        if (isString(config._imageScaleMode)) {
-          scaleMode = config._imageScaleMode;
+        if (isString(config.imageScaleMode)) {
+          scaleMode = config.imageScaleMode;
         }
 
         const _baseZIndex = $(config.slideshowContainer).css("z-index");
