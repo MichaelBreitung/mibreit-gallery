@@ -1,10 +1,13 @@
+import "./css/mibreit-gallery.css";
+import "./css/mibreit-slideshow.css";
+import "./css/mibreit-thumbview.css";
+
 import {
   isUndefined
 } from "./tools/typeChecks";
 
 import Slideshow from "./components/slideshow";
 import Gallery from "./components/gallery";
-import ImageLoader from "./components/loader";
 
 export function createSlideshow(config) {
   if (isUndefined(config)) {
@@ -35,15 +38,3 @@ export function createGallery(config) {
 
   return gallery;
 }
-
-// export function loadImages(config) {
-//   if (isUndefined(config)) {
-//     throw Error("loadImages Error: No Config was provided");
-//   }
-
-//   const imageLoader = new ImageLoader();
-
-//   if (!imageLoader.init(config)) {
-//     throw Error("imageLoader Error: invalid config");
-//   }
-// }
