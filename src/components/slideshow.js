@@ -4,6 +4,7 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 import $ from "jquery";
+import Preloader from "./preloader";
 import {
   isString,
   isUndefined,
@@ -27,6 +28,8 @@ export default class Slideshow {
     this._baseZIndex = BASE_Z_INDEX;
     // this callback, if provided, well be called each time the image changes
     this._imageChangedCallback = undefined;
+
+    this._preloader = undefined;
   }
 
   init(config) {
@@ -34,8 +37,12 @@ export default class Slideshow {
     if (isString(config.slideshowContainer)) {
       // those selectors ensure that we only have the containers and images that are connected
       // as parent - child
-      this._imageContainers = $(config.slideshowContainer + " .mibreit-imageElement").has("img");
-      this._images = $(config.slideshowContainer + " .mibreit-imageElement > img");
+      this._imageContainers = $(
+        config.slideshowContainer + " .mibreit-imageElement"
+      ).has("img");
+      this._images = $(
+        config.slideshowContainer + " .mibreit-imageElement > img"
+      );
       if (this._imageContainers.length > 0) {
         let margin = {
           margin: 0
@@ -65,9 +72,14 @@ export default class Slideshow {
           this._imageChangedCallback = config.imageChangedCallback;
         }
 
-        if (isBoolean(config.slideshowHighlighting) && config.slideshowHighlighting === true) {
+        if (
+          isBoolean(config.slideshowHighlighting) &&
+          config.slideshowHighlighting === true
+        ) {
           if ($(".mibreit-slideshow-highlight").length === 0) {
-            $("body").append("<div class='mibreit-slideshow-highlight'/></div>");
+            $("body").append(
+              "<div class='mibreit-slideshow-highlight'/></div>"
+            );
           }
 
           $(config.slideshowContainer).bind("mouseenter", function () {
@@ -91,6 +103,8 @@ export default class Slideshow {
 
         this._prepare_Images(containerWidth, containerHeight, scaleMode);
 
+        this._preloader = new Preloader(this._images, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
+
         // make sure the title callback is called
         this._imageChanged();
       } else {
@@ -106,7 +120,7 @@ export default class Slideshow {
     if (this._interval != 0) {
       this._intervalId = setInterval(this.showNextImage, this._interval);
     }
-  };
+  }
 
   stop() {
     if (this._intervalId !== -1) {
@@ -115,45 +129,49 @@ export default class Slideshow {
     }
   }
 
-  showImage = (newIndex) => {
-    if (this._isValidIndex(newIndex) && !this._images[newIndex].hasAttribute("data-src") && newIndex != this._currentIndex) {
-      $(this._imageContainers[newIndex]).animate({
-          opacity: 1.0
-        },
-        IMAGE_ANIMATION_TIME
-      );
-      $(this._imageContainers[this._currentIndex]).animate({
-          opacity: 0.0
-        },
-        IMAGE_ANIMATION_TIME
-      );
-      $(this._imageContainers[newIndex]).css({
-        "z-index": this._baseZIndex + 1
-      });
-      $(this._imageContainers[this._currentIndex]).css({
-        "z-index": this._baseZIndex
-      });
-      this._currentIndex = newIndex;
-
-      this._imageChanged();
+  showImage = newIndex => {
+    if (this._isValidIndex(newIndex) && newIndex != this._currentIndex) {
+      if (!this._images[newIndex].hasAttribute("data-src")) {
+        this._changeCurrentImage(newIndex);
+      } else {
+        let self = this; // capture this pointer for closure
+        this._images[newIndex].onload = function () {
+          this.removeAttribute("data-src");
+          self._changeCurrentImage(newIndex);
+        };
+        this._images[newIndex].setAttribute(
+          "src",
+          this._images[newIndex].getAttribute("data-src")
+        );
+      }
     }
   };
 
   showNextImage = () => {
-    var new_CurrentIndex = this._currentIndex < this._imageContainers.length - 1 ? this._currentIndex + 1 : 0;
+    var new_CurrentIndex =
+      this._currentIndex < this._imageContainers.length - 1 ?
+      this._currentIndex + 1 :
+      0;
 
     this.showImage(new_CurrentIndex);
   };
 
   showPreviousImage = () => {
-    var new_CurrentIndex = this._currentIndex > 0 ? this._currentIndex - 1 : this._imageContainers.length - 1;
+    var new_CurrentIndex =
+      this._currentIndex > 0 ?
+      this._currentIndex - 1 :
+      this._imageContainers.length - 1;
 
     this.showImage(new_CurrentIndex);
   };
 
   // private helper methods
   _isValidIndex(index) {
-    return (index >= 0 && index < this._images.length && index < this._imageContainers.length);
+    return (
+      index >= 0 &&
+      index < this._images.length &&
+      index < this._imageContainers.length
+    );
   }
 
   _prepareContainers(width, height, marginObj) {
@@ -173,7 +191,12 @@ export default class Slideshow {
 
   _prepare_Images(containerWidth, containerHeight, scaleMode) {
     for (var i = 0; i < this._images.length; i++) {
-      this._prepareImage(this._images[i], containerWidth, containerHeight, scaleMode);
+      this._prepareImage(
+        this._images[i],
+        containerWidth,
+        containerHeight,
+        scaleMode
+      );
     }
   }
 
@@ -189,13 +212,6 @@ export default class Slideshow {
       var title = image.getAttribute("title");
       image.removeAttribute("title");
       image.setAttribute("data-title", title);
-    }
-
-    if (image.hasAttribute("data-src")) {
-      image.onload = function () {
-        this.removeAttribute("data-src");
-      };
-      image.setAttribute("src", image.getAttribute("data-src"));
     }
   }
 
@@ -242,6 +258,30 @@ export default class Slideshow {
     $(image).css({
       top: y
     });
+  }
+
+  _changeCurrentImage(newIndex) {
+    $(this._imageContainers[newIndex]).animate({
+        opacity: 1.0
+      },
+      IMAGE_ANIMATION_TIME
+    );
+    $(this._imageContainers[this._currentIndex]).animate({
+        opacity: 0.0
+      },
+      IMAGE_ANIMATION_TIME
+    );
+    $(this._imageContainers[newIndex]).css({
+      "z-index": this._baseZIndex + 1
+    });
+    $(this._imageContainers[this._currentIndex]).css({
+      "z-index": this._baseZIndex
+    });
+    this._currentIndex = newIndex;
+
+    this._imageChanged();
+
+    this._preloader.setCurrentIndex(this._currentIndex);
   }
 
   _imageChanged() {

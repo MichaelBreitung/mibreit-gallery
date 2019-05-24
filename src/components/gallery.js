@@ -114,7 +114,6 @@ export default class Gallery {
 
     error_code = this._mibreitSlideshow.init({
       imageScaleMode: "fitaspect",
-      interval: 4000,
       imageChangedCallback: this._imageChangedCallback,
       slideshowHighlighting: this._slideshowHighlighting,
       ...config
