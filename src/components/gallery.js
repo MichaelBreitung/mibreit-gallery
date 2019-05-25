@@ -35,7 +35,7 @@ export default class Gallery {
 
   init(config) {
     let error_code = 0;
-    const self = this;
+
     if (isString(config.slideshowContainer)) {
       this._slideshowContainer = config.slideshowContainer;
     } else {
@@ -81,45 +81,12 @@ export default class Gallery {
     if (
       error_code === 0
     ) {
+
       if (this._showThumbview) {
         this._initThumbview(config);
       }
 
-      $(this._slideshowContainer).bind("mouseenter", function () {
-        $(self._slideshowNext).animate({
-            opacity: 0.4
-          },
-          HOVER_ANIMATION_TIME
-        );
-        $(self._slideshowPrevious).animate({
-            opacity: 0.4
-          },
-          HOVER_ANIMATION_TIME
-        );
-      });
-
-      $(this._slideshowContainer).bind("mouseleave", function () {
-        $(self._slideshowNext).animate({
-            opacity: 0.0
-          },
-          HOVER_ANIMATION_TIME
-        );
-        $(self._slideshowPrevious).animate({
-            opacity: 0.0
-          },
-          HOVER_ANIMATION_TIME
-        );
-      });
-
-      $(this._slideshowContainer).bind("click", function (event) {
-        var offset = $(this).offset();
-        var relativeX = event.pageX - offset.left;
-        self._containerClickedCallback(relativeX, $(this).width());
-      });
-
-      $(document).bind("keydown", function (event) {
-        self._keyDownCallback(event.which);
-      });
+      this._initKeyAndMouseEvents();
 
       // initial update of title
       if (this._titleContainer !== undefined) {
@@ -142,6 +109,7 @@ export default class Gallery {
   }
 
   _initThumbview(config) {
+    const self = this;
     this._mibreitThumbview = new Thumbview();
 
     if (
@@ -171,6 +139,46 @@ export default class Gallery {
         });
       }
     }
+  }
+
+  _initKeyAndMouseEvents() {
+    const self = this;
+
+    $(this._slideshowContainer).bind("mouseenter", function () {
+      $(self._slideshowNext).animate({
+          opacity: 0.4
+        },
+        HOVER_ANIMATION_TIME
+      );
+      $(self._slideshowPrevious).animate({
+          opacity: 0.4
+        },
+        HOVER_ANIMATION_TIME
+      );
+    });
+
+    $(this._slideshowContainer).bind("mouseleave", function () {
+      $(self._slideshowNext).animate({
+          opacity: 0.0
+        },
+        HOVER_ANIMATION_TIME
+      );
+      $(self._slideshowPrevious).animate({
+          opacity: 0.0
+        },
+        HOVER_ANIMATION_TIME
+      );
+    });
+
+    $(this._slideshowContainer).bind("click", function (event) {
+      var offset = $(this).offset();
+      var relativeX = event.pageX - offset.left;
+      self._containerClickedCallback(relativeX, $(this).width());
+    });
+
+    $(document).bind("keydown", function (event) {
+      self._keyDownCallback(event.which);
+    });
   }
 
   _updateTitle(title) {
