@@ -76,52 +76,15 @@ export default class Gallery {
       this._slideshowHighlighting = config.slideshowHighlighting;
     }
 
-    // Initialization of Thumbview and Scroller has to happen before MibreitSlideshow
-    // because slideshow affects both
-    if (this._showThumbview) {
-      this._mibreitThumbview = new Thumbview();
-
-      if (
-        this._mibreitThumbview.init({
-          thumbClickCallback: this._thumbClickCallback,
-          thumbviewContainer: this._thumbviewContainer
-        })
-      ) {
-        $(this._thumbviewContainer + " .mibreit-thumbElement").wrapAll(
-          "<div class='mibreit-thumbs-scroller' />"
-        );
-
-        this._mibreitScroller = new ThumbviewScroller();
-        if (
-          !this._mibreitScroller.init({
-            scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
-            ...config
-          })
-        ) {
-
-          $(this._thumbviewPrevious).bind("click", function () {
-            self._mibreitScroller.scrollLeft(6);
-          });
-
-          $(this._thumbviewNext).bind("click", function () {
-            self._mibreitScroller.scrollRight(6);
-          });
-        }
-      }
-    }
-
-    this._mibreitSlideshow = new Slideshow();
-
-    error_code = this._mibreitSlideshow.init({
-      imageScaleMode: "fitaspect",
-      imageChangedCallback: this._imageChangedCallback,
-      slideshowHighlighting: this._slideshowHighlighting,
-      ...config
-    });
+    error_code = this._initSlideshow(config);
 
     if (
       error_code === 0
     ) {
+      if (this._showThumbview) {
+        this._initThumbview(config);
+      }
+
       $(this._slideshowContainer).bind("mouseenter", function () {
         $(self._slideshowNext).animate({
             opacity: 0.4
@@ -157,9 +120,61 @@ export default class Gallery {
       $(document).bind("keydown", function (event) {
         self._keyDownCallback(event.which);
       });
+
+      // initial update of title
+      if (this._titleContainer !== undefined) {
+        this._updateTitle(this._mibreitSlideshow.getCurrentImageTitle());
+      }
     }
 
     return error_code;
+  }
+
+  _initSlideshow(config) {
+    this._mibreitSlideshow = new Slideshow();
+
+    return this._mibreitSlideshow.init({
+      imageScaleMode: "fitaspect",
+      imageChangedCallback: this._imageChangedCallback,
+      slideshowHighlighting: this._slideshowHighlighting,
+      ...config
+    });
+  }
+
+  _initThumbview(config) {
+    this._mibreitThumbview = new Thumbview();
+
+    if (
+      this._mibreitThumbview.init({
+        thumbClickCallback: this._thumbClickCallback,
+        thumbviewContainer: this._thumbviewContainer
+      })
+    ) {
+      $(this._thumbviewContainer + " .mibreit-thumbElement").wrapAll(
+        "<div class='mibreit-thumbs-scroller' />"
+      );
+
+      this._mibreitScroller = new ThumbviewScroller();
+      if (
+        !this._mibreitScroller.init({
+          scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
+          ...config
+        })
+      ) {
+
+        $(this._thumbviewPrevious).bind("click", function () {
+          self._mibreitScroller.scrollLeft(6);
+        });
+
+        $(this._thumbviewNext).bind("click", function () {
+          self._mibreitScroller.scrollRight(6);
+        });
+      }
+    }
+  }
+
+  _updateTitle(title) {
+    $(this._titleContainer).html("<h3>" + title + "</h3>");
   }
 
   _thumbClickCallback = id => {
@@ -171,7 +186,7 @@ export default class Gallery {
       this._mibreitScroller.scrollTo(id);
     }
     if (this._titleContainer !== undefined) {
-      $(this._titleContainer).html("<h3>" + title + "</h3>");
+      this._updateTitle(title);
     }
   };
 

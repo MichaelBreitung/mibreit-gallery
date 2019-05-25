@@ -104,9 +104,6 @@ export default class Slideshow {
         this._prepare_Images(containerWidth, containerHeight, scaleMode);
 
         this._preloader = new Preloader(this._images, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
-
-        // make sure the title callback is called
-        this._imageChanged();
       } else {
         error_code = 202;
       }
@@ -164,6 +161,14 @@ export default class Slideshow {
 
     this.showImage(new_CurrentIndex);
   };
+
+  getCurrentImageTitle() {
+    if (this._isValidIndex(this._currentIndex)) {
+      return this._images[this._currentIndex].getAttribute("data-title");
+    } else {
+      return "";
+    }
+  }
 
   // private helper methods
   _isValidIndex(index) {
