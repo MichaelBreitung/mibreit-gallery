@@ -226,27 +226,48 @@ export default class Slideshow {
         image.setAttribute("width", containerWidth);
         image.setAttribute("height", containerHeight);
         break;
-      case "fitaspect":
+      case "expand": {
         let width = parseInt(image.getAttribute("width"));
         let height = parseInt(image.getAttribute("height"));
         const aspect = width / height;
         let scaler = 1;
         if (containerWidth / containerHeight > aspect) {
           // fit based on height
-          scaler = containerHeight / height;
+          scaler = height / containerHeight;
         } else {
           // fit based on width
-          scaler = containerWidth / width;
+          scaler = width / containerWidth;
         }
         height *= scaler;
         width *= scaler;
 
         image.setAttribute("width", width);
         image.setAttribute("height", height);
-        break;
-      case "none":
-      default:
-        // no scaling applied
+      }
+
+      break;
+    case "fitaspect": {
+      let width = parseInt(image.getAttribute("width"));
+      let height = parseInt(image.getAttribute("height"));
+      const aspect = width / height;
+      let scaler = 1;
+      if (containerWidth / containerHeight > aspect) {
+        // fit based on height
+        scaler = containerHeight / height;
+      } else {
+        // fit based on width
+        scaler = containerWidth / width;
+      }
+      height *= scaler;
+      width *= scaler;
+
+      image.setAttribute("width", width);
+      image.setAttribute("height", height);
+    }
+    break;
+    case "none":
+    default:
+      // no scaling applied
     }
   }
 
