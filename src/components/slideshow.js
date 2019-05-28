@@ -13,8 +13,11 @@ import {
   isObject
 } from "../tools/typeChecks";
 
+import {
+  BASE_Z_INDEX
+} from "../tools/globals";
+
 const IMAGE_ANIMATION_TIME = 800;
-const BASE_Z_INDEX = 10;
 const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 
 export default class Slideshow {

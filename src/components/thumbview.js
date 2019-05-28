@@ -6,8 +6,13 @@
 import $ from "jquery";
 import {
   isString,
+  isNumber,
   isUndefined
 } from "../tools/typeChecks";
+
+import {
+  BASE_Z_INDEX
+} from "../tools/globals";
 
 export default class Thumbview {
   init(config) {
@@ -24,6 +29,12 @@ export default class Thumbview {
       const thumbWidth = thumbContainers.innerWidth();
       const thumbHeight = thumbContainers.innerHeight();
 
+      let _baseZIndex = $(config.thumbviewContainer).css("z-index");
+      if (!isNumber(_baseZIndex)) {
+        _baseZIndex = BASE_Z_INDEX;
+      }
+      this._elevateThumbContainers(config.thumbviewContainer, _baseZIndex);
+
       if (!isUndefined(config.thumbClickCallback)) {
         this._setupClickEvents(thumbContainers, config.thumbClickCallback);
       }
@@ -33,6 +44,14 @@ export default class Thumbview {
       success = true;
     }
     return success;
+  }
+
+  _elevateThumbContainers(thumbContainer, zIndex) {
+
+    $(thumbContainer).css({
+      "z-index": BASE_Z_INDEX
+    });
+
   }
 
   _setupClickEvents(thumbContainers, thumbClickCallback) {

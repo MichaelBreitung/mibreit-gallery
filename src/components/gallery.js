@@ -7,11 +7,14 @@ import $ from "jquery";
 import Thumbview from "./thumbview";
 import Slideshow from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
+import FullscreenController from "./fullscreenController";
 import {
   isString,
   isBoolean
 } from "../tools/typeChecks";
-
+import {
+  BASE_Z_INDEX
+} from "../tools/globals";
 // const
 const HOVER_ANIMATION_TIME = 400;
 
@@ -31,6 +34,7 @@ export default class Gallery {
     this._mibreitScroller = undefined;
     this._mibreitThumbview = undefined;
     this._mibreitSlideshow = undefined;
+    this._fullscreenController = undefined;
   }
 
   init(config) {
@@ -71,6 +75,9 @@ export default class Gallery {
     }
     if (isString(config.titleContainer)) {
       this._titleContainer = config.titleContainer;
+    }
+    if (isBoolean(config.allowFullscreen)) {
+      this._fullscreenController = new FullscreenController();
     }
     if (isBoolean(config.slideshowHighlighting)) {
       this._slideshowHighlighting = config.slideshowHighlighting;
@@ -199,10 +206,13 @@ export default class Gallery {
   };
 
   _containerClickedCallback = (relativeX, containerWidth) => {
-    if (relativeX < containerWidth / 2) {
+    if (relativeX < containerWidth / 3) {
       this._mibreitSlideshow.showPreviousImage();
-    } else {
+    } else if (relativeX > containerWidth * 2 / 3) {
       this._mibreitSlideshow.showNextImage();
+    } else if (this._fullscreenController) {
+      // fullscreen        
+      this._fullscreenController.toggleFullscreen();
     }
   };
 
