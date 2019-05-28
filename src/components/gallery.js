@@ -77,7 +77,10 @@ export default class Gallery {
       this._titleContainer = config.titleContainer;
     }
     if (isBoolean(config.allowFullscreen)) {
-      this._fullscreenController = new FullscreenController();
+      const fullscreenController = new FullscreenController();
+      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer)) {
+        this._fullscreenController = fullscreenController;
+      }
     }
     if (isBoolean(config.slideshowHighlighting)) {
       this._slideshowHighlighting = config.slideshowHighlighting;
@@ -131,7 +134,7 @@ export default class Gallery {
 
       this._mibreitScroller = new ThumbviewScroller();
       if (
-        !this._mibreitScroller.init({
+        this._mibreitScroller.init({
           scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
           ...config
         })

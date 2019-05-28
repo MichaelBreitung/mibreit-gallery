@@ -20,32 +20,37 @@ export default class ThumbviewScroller {
   }
 
   init(config) {
-    let error_code = 0;
+    let success = false;
 
-    if (isString(config.thumbviewContainer) && isString(config.scroller)) {
+    if (isString(config.thumbviewContainer) && $(config.thumbviewContainer).length &&
+      isString(config.scroller) && $(config.scroller).length) {
       let thumbContainers = $(config.thumbviewContainer + " .mibreit-thumbElement");
-      this.scroller = $(config.scroller);
+      if (thumbContainers.length > 0) {
+        this.scroller = $(config.scroller);
 
-      this._stepSize = thumbContainers.outerWidth(true);
-      this._nrOfImages = thumbContainers.length;
-      this._nrVisibleImages = Math.floor(this.scroller.width() / this._stepSize);
+        this._stepSize = thumbContainers.outerWidth(true);
+        this._nrOfImages = thumbContainers.length;
+        this._nrVisibleImages = Math.floor(this.scroller.width() / this._stepSize);
 
-      // ensure that scroller width is an even multiple of _stepsize
-      this.scroller.css({
-        width: this._nrVisibleImages * this._stepSize
-      });
-
-      if (this._nrOfImages <= this._nrVisibleImages) {
-        this._allowMovement = false;
+        // ensure that scroller width is an even multiple of _stepsize
         this.scroller.css({
-          left: (this.scroller.width() - this._stepSize * this._nrOfImages) / 2
+          width: this._nrVisibleImages * this._stepSize
         });
-      } else {
-        this._allowMovement = true;
-        this._midPositionId = Math.floor(this._nrVisibleImages / 2);
+
+        if (this._nrOfImages <= this._nrVisibleImages) {
+          this._allowMovement = false;
+          this.scroller.css({
+            left: (this.scroller.width() - this._stepSize * this._nrOfImages) / 2
+          });
+        } else {
+          this._allowMovement = true;
+          this._midPositionId = Math.floor(this._nrVisibleImages / 2);
+        }
+
+        success = true;
       }
     }
-    return error_code;
+    return success;
   }
 
   /**

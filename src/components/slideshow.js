@@ -37,7 +37,7 @@ export default class Slideshow {
 
   init(config) {
     let error_code = 0;
-    if (isString(config.slideshowContainer)) {
+    if (isString(config.slideshowContainer) && $(config.slideshowContainer).length) {
       // those selectors ensure that we only have the containers and images that are connected
       // as parent - child
       this._imageContainers = $(
@@ -46,7 +46,7 @@ export default class Slideshow {
       this._images = $(
         config.slideshowContainer + " .mibreit-imageElement > img"
       );
-      if (this._imageContainers.length > 0) {
+      if (this._imageContainers.length > 0 && this._imageContainers.length === this._images.length) {
         let margin = {
           margin: 0
         };

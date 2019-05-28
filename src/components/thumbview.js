@@ -18,7 +18,7 @@ export default class Thumbview {
   init(config) {
     let success = false;
 
-    if (isString(config.thumbviewContainer)) {
+    if (isString(config.thumbviewContainer) && $(config.thumbviewContainer).length) {
       const thumbContainers = $(
         config.thumbviewContainer + " .mibreit-thumbElement"
       );
@@ -26,22 +26,25 @@ export default class Thumbview {
         config.thumbviewContainer + " .mibreit-thumbElement > img"
       );
 
-      const thumbWidth = thumbContainers.innerWidth();
-      const thumbHeight = thumbContainers.innerHeight();
+      if (thumbContainers.length > 0 && thumbContainers.length === images.length) {
 
-      let _baseZIndex = $(config.thumbviewContainer).css("z-index");
-      if (!isNumber(_baseZIndex)) {
-        _baseZIndex = BASE_Z_INDEX;
+        const thumbWidth = thumbContainers.innerWidth();
+        const thumbHeight = thumbContainers.innerHeight();
+
+        let _baseZIndex = $(config.thumbviewContainer).css("z-index");
+        if (!isNumber(_baseZIndex)) {
+          _baseZIndex = BASE_Z_INDEX;
+        }
+        this._elevateThumbContainers(config.thumbviewContainer, _baseZIndex);
+
+        if (!isUndefined(config.thumbClickCallback)) {
+          this._setupClickEvents(thumbContainers, config.thumbClickCallback);
+        }
+
+        this._prepareThumbview(images, thumbWidth, thumbHeight);
+
+        success = true;
       }
-      this._elevateThumbContainers(config.thumbviewContainer, _baseZIndex);
-
-      if (!isUndefined(config.thumbClickCallback)) {
-        this._setupClickEvents(thumbContainers, config.thumbClickCallback);
-      }
-
-      this._prepareThumbview(images, thumbWidth, thumbHeight);
-
-      success = true;
     }
     return success;
   }

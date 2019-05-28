@@ -11,7 +11,21 @@ import {
 export default class FullscreenController {
 
   constructor() {
+    this._slideshowContainer = undefined;
+    this._thumbviewContainer = undefined;
     this._isFullscreen = false;
+  }
+
+  init(slideshowContainer, thumbviewContainer) {
+    let success = false;
+    if ($(slideshowContainer).length) // thumbview is optional
+    {
+      this._slideshowContainer = slideshowContainer;
+      this._thumbviewContainer = thumbviewContainer;
+
+      success = true;
+    }
+    return success;
   }
 
 
