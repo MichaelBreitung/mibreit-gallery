@@ -15,12 +15,13 @@ export default class FullscreenController {
     this._isFullscreen = false;
   }
 
-  init(slideshowContainer, thumbviewContainer) {
+  init(slideshowContainer, thumbviewContainer, titleContainer) {
     let success = false;
     if ($(slideshowContainer).length) {
       // thumbview is optional
       this._slideshowContainer = slideshowContainer;
       this._thumbviewContainer = thumbviewContainer;
+      this._titleContainer = titleContainer;
 
       success = true;
     }
@@ -29,28 +30,38 @@ export default class FullscreenController {
 
   toggleFullscreen() {
     if (this._isFullscreen) {
-      let slideshow = $(".mibreit-fullscreen").detach();
-      slideshow.appendTo("content");
-      slideshow.css({
+
+      $(this._slideshowContainer).appendTo(".mibreit-regular");
+      $(this._slideshowContainer).css({
         width: this._oldWidth,
         height: this._oldHeight
-      })
+      });
+      $(this._thumbviewContainer).appendTo(".mibreit-regular");
+      $(this._titleContainer).appendTo(".mibreit-regular");
       $(".mibreit-fullscreen").remove();
       this._isFullscreen = false;
     } else {
       // put slideshowContainer into fullscreen
 
+      if ($(".mibreit-regular").length === 0) {
+        // attach regular wrapper, which is used as placeholder for gallery until we
+        // deactivate fullscreen again
+        $(this._slideshowContainer).wrap("<div class=\"mibreit-regular\"></div>");
+        $(this._thumbviewContainer).appendTo(".mibreit-regular");
+        $(this._titleContainer).appendTo(".mibreit-regular");
+      }
+
       this._oldWidth = $(this._slideshowContainer).css("width");
       this._oldHeight = $(this._slideshowContainer).css("height");
-      let slideshow = $(this._slideshowContainer).detach();
+
       $("body").append("<div class='mibreit-fullscreen'/></div>");
-
-
-      slideshow.appendTo(".mibreit-fullscreen");
-      slideshow.css({
+      $(this._slideshowContainer).appendTo(".mibreit-fullscreen");
+      $(this._slideshowContainer).css({
         width: "100%",
-        height: "100%"
-      })
+        height: "80%"
+      });
+      $(this._thumbviewContainer).appendTo(".mibreit-fullscreen");
+      $(this._titleContainer).appendTo(".mibreit-fullscreen");
       this._isFullscreen = true;
     }
     return this._isFullscreen;

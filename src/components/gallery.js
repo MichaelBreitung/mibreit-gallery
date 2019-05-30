@@ -82,7 +82,7 @@ export default class Gallery {
     }
     if (isBoolean(config.allowFullscreen)) {
       const fullscreenController = new FullscreenController();
-      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer)) {
+      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer, config.titleContainer)) {
         this._fullscreenController = fullscreenController;
       }
     }
