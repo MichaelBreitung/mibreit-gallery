@@ -82,7 +82,8 @@ export default class Gallery {
     }
     if (isBoolean(config.allowFullscreen)) {
       const fullscreenController = new FullscreenController();
-      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer, config.titleContainer)) {
+      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer,
+          config.titleContainer, this._fullscreenChangedCallback)) {
         this._fullscreenController = fullscreenController;
       }
     }
@@ -210,6 +211,18 @@ export default class Gallery {
     }
   };
 
+  _fullscreenChangedCallback = (fullscreen) => {
+    if (fullscreen) {
+      this._mibreitSlideshow.reinitSize("fitaspect");
+      $(window).resize(() => {
+        this._mibreitSlideshow.reinitSize("fitaspect");
+      });
+    } else {
+      this._mibreitSlideshow.reinitSize(this._scaleMode);
+      $(window).off("resize");
+    }
+  }
+
   _containerClickedCallback = (relativeX, containerWidth) => {
     if (relativeX < containerWidth / 3) {
       this._mibreitSlideshow.showPreviousImage();
@@ -217,25 +230,27 @@ export default class Gallery {
       this._mibreitSlideshow.showNextImage();
     } else if (this._fullscreenController) {
       // fullscreen        
-      if (this._fullscreenController.toggleFullscreen()) {
-        this._mibreitSlideshow.reinitSize("fitaspect");
-        $(window).resize(() => {
-          this._mibreitSlideshow.reinitSize("fitaspect");
-        });
-      } else {
-        this._mibreitSlideshow.reinitSize(this._scaleMode);
-        $(window).off("resize");
-      }
+      this._fullscreenController.toggleFullscreen();
     }
   };
 
   _keyDownCallback = key => {
-    if (key == 37) {
+    if (key === 37) {
       // left arrow
       this._mibreitSlideshow.showPreviousImage();
-    } else if (key == 39) {
+    } else if (key === 39) {
       // right arrow
       this._mibreitSlideshow.showNextImage();
+    } else if (key === 27) {
+      // escape      
+      if (this._fullscreenController && this._fullscreenController.isFullscreen()) {
+        this._fullscreenController.toggleFullscreen();
+      }
+    } else if (key === 70) {
+      // f -> toggle fullscreen
+      if (this._fullscreenController) {
+        this._fullscreenController.toggleFullscreen();
+      }
     }
   };
 }

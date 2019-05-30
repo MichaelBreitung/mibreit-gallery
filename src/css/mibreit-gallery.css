@@ -112,6 +112,20 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #000000ee;
+    background-color: #181818;
     z-index: 20;
+}
+
+.mibreit-fullscreen>.exit-fullscreen {
+    position: absolute;
+    z-index: 100;
+    background-image: url("../images/exit-fullscreen.png");
+    background-size: 64px;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 64px;
+    height: 64px;
+    opacity: 0.8;
+    right: 25px;
+    top: 25px;
 }

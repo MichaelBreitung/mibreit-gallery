@@ -7,6 +7,7 @@ import "./images/previous-image.png";
 import "./images/next.png";
 import "./images/previous.png";
 import "./images/image-placeholder-transparent.png";
+import "./images/exit-fullscreen.png";
 
 import {
   isUndefined
