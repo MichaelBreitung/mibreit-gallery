@@ -12,15 +12,12 @@ import {
   isString,
   isBoolean
 } from "../tools/typeChecks";
-import {
-  BASE_Z_INDEX
-} from "../tools/globals";
+
 // const
 const HOVER_ANIMATION_TIME = 400;
 
 export default class Gallery {
   constructor() {
-    this._originalConfig = undefined;
     // default values are used if config does not provide alternative values
     this._slideshowContainer = ".mibreit-slideshow";
     this._thumbviewContainer = ".mibreit-thumbs";
@@ -31,6 +28,7 @@ export default class Gallery {
     this._slideshowPrevious = ".mibreit-slideshow-previous";
     this._showThumbview = true;
     this._slideshowHighlighting = false;
+    this._scaleMode = "fitaspect";
 
     this._mibreitScroller = undefined;
     this._mibreitThumbview = undefined;
@@ -40,8 +38,6 @@ export default class Gallery {
 
   init(config) {
     let error_code = 0;
-
-    this._originalConfig = config;
 
     if (isString(config.slideshowContainer)) {
       this._slideshowContainer = config.slideshowContainer;
@@ -79,6 +75,11 @@ export default class Gallery {
     if (isString(config.titleContainer)) {
       this._titleContainer = config.titleContainer;
     }
+    if (isString(config.imageScaleMode)) {
+      this._scaleMode = config.imageScaleMode;
+    } else {
+      config.imageScaleMode = this._scaleMode;
+    }
     if (isBoolean(config.allowFullscreen)) {
       const fullscreenController = new FullscreenController();
       if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer)) {
@@ -112,7 +113,6 @@ export default class Gallery {
     this._mibreitSlideshow = new Slideshow();
 
     return this._mibreitSlideshow.init({
-      imageScaleMode: "fitaspect",
       imageChangedCallback: this._imageChangedCallback,
       slideshowHighlighting: this._slideshowHighlighting,
       ...config
@@ -217,9 +217,9 @@ export default class Gallery {
     } else if (this._fullscreenController) {
       // fullscreen        
       if (this._fullscreenController.toggleFullscreen()) {
-        this._mibreitSlideshow.reinitSize(0, "none");
+        this._mibreitSlideshow.reinitSize("none");
       } else {
-        this._mibreitSlideshow.reinitSize(this._originalConfig.imageContainerMargin, this._originalConfig.imageScaleMode);
+        this._mibreitSlideshow.reinitSize(this._scaleMode);
       }
     }
   };

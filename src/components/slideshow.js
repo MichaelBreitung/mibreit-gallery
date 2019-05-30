@@ -28,9 +28,6 @@ export default class Slideshow {
     this._slideshowContainer = undefined;
     this._imageContainers = [];
     this._imageWrappers = [];
-    this._imageMargin = {
-      margin: 0
-    };
     this._imageScaleMode = "none";
     this._interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this._intervalId = -1;
@@ -78,7 +75,7 @@ export default class Slideshow {
         }
 
         // finally prepare the images
-        this.reinitSize(config.imageContainerMargin, config.imageScaleMode);
+        this.reinitSize(config.imageScaleMode);
 
         // and start preloading
         this._preloader = new Preloader(this._imageWrappers, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
@@ -91,18 +88,14 @@ export default class Slideshow {
     return error_code;
   }
 
-  reinitSize(margin, scaleMode) {
+  reinitSize(scaleMode) {
     if (isString(this._slideshowContainer) && $(this._slideshowContainer).length) {
-      if (isObject(margin)) {
-        this._imageMargin = margin;
-      }
-
       if (isString(scaleMode)) {
         this._imageScaleMode = scaleMode;
       }
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
-      this._prepareContainers(containerWidth, containerHeight, this._imageMargin);
+      this._prepareContainers();
       this._prepare_Images(containerWidth, containerHeight, this._imageScaleMode);
     }
   }
@@ -198,12 +191,10 @@ export default class Slideshow {
     });
   }
 
-  _prepareContainers(width, height, marginObj) {
+  _prepareContainers() {
     $(this._imageContainers).css({
       opacity: 0.0
     });
-
-    $(this._imageContainers).css(marginObj);
 
     $(this._imageContainers[this._currentIndex]).css({
       opacity: 1.0,
