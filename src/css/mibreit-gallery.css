@@ -54,12 +54,12 @@
     top: 0.5rem;
     width: 720px;
     height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .mibreit-thumbview-previous {
-    position: absolute;
-    left: 2px;
-    bottom: 40%;
     width: 30px;
     height: 30px;
     background-image: url("../images/previous.png");
@@ -68,9 +68,6 @@
 }
 
 .mibreit-thumbview-next {
-    position: absolute;
-    right: 2px;
-    bottom: 40%;
     width: 30px;
     height: 30px;
     background-image: url("../images/next.png");
@@ -79,9 +76,7 @@
 }
 
 .mibreit-thumbs {
-    position: relative;
-    left: 32px;
-    width: 660px;
+
     overflow: hidden;
 }
 
