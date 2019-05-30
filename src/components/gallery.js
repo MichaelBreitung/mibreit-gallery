@@ -91,9 +91,7 @@ export default class Gallery {
 
     error_code = this._initSlideshow(config);
 
-    if (
-      error_code === 0
-    ) {
+    if (error_code === 0) {
 
       if (this._showThumbview) {
         this._initThumbview(config);

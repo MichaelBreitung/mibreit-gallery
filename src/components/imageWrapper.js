@@ -15,6 +15,9 @@ export default class ImageWrapper {
     this._originalWidth = this._image.getAttribute("width");
     this._originalHeight = this._image.getAttribute("height");
 
+    // center image
+    $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
+
     if (this._image.hasAttribute("title")) {
       // we do this to ensure that title will not show up on hover
       var title = this._image.getAttribute("title");
@@ -55,14 +58,7 @@ export default class ImageWrapper {
     return this._title;
   }
 
-  centerInContainer() {
-    $(this._image).css({
-      display: "block",
-      margin: "auto"
-    });
-  }
-
-  reScale(containerWidth, containerHeight, scaleMode) {
+  applyScaleMode(containerWidth, containerHeight, scaleMode) {
     switch (scaleMode) {
       case "stretch":
         $(this._image).css({

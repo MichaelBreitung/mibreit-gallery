@@ -200,8 +200,6 @@ export default class Slideshow {
 
   _prepareContainers(width, height, marginObj) {
     $(this._imageContainers).css({
-      width: width,
-      height: height,
       opacity: 0.0
     });
 
@@ -215,9 +213,7 @@ export default class Slideshow {
 
   _prepare_Images(containerWidth, containerHeight, scaleMode) {
     for (var i = 0; i < this._imageWrappers.length; i++) {
-      this._imageWrappers[i].reScale(containerWidth, containerHeight, scaleMode);
-
-      this._imageWrappers[i].centerInContainer();
+      this._imageWrappers[i].applyScaleMode(containerWidth, containerHeight, scaleMode);
     }
   }
 

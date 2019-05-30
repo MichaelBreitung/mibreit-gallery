@@ -3,12 +3,23 @@
   padding: 0px;
   overflow: hidden;
   z-index: 10;
+  width: 100%;
+  height: 100%;
+}
+
+.mibreit-center-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .mibreit-imageElement img {
   position: relative;
   padding: 0px;
-  margin: 0px;
+  display: block;
+  margin: auto;
 }
 
 .mibreit-imageElement h3 {
