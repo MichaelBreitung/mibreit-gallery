@@ -55,70 +55,65 @@ export default class ImageWrapper {
     return this._title;
   }
 
-  centerInContainer(containerWidth, containerHeight) {
-    const width = parseInt(this._image.getAttribute("width"));
-    const height = parseInt(this._image.getAttribute("height"));
-
-    const x = (width + containerWidth) / 2 - width;
-    const y = (height + containerHeight) / 2 - height;
-
+  centerInContainer() {
     $(this._image).css({
-      left: x
-    });
-    $(this._image).css({
-      top: y
+      display: "block",
+      margin: "auto"
     });
   }
 
   reScale(containerWidth, containerHeight, scaleMode) {
     switch (scaleMode) {
       case "stretch":
-        this._image.setAttribute("width", containerWidth);
-        this._image.setAttribute("height", containerHeight);
+        $(this._image).css({
+          width: "100%",
+          height: "100%"
+        });
         break;
       case "expand": {
         let width = parseInt(this._originalWidth);
         let height = parseInt(this._originalHeight);
         const aspect = width / height;
-        let scaler = 1;
         if (containerWidth / containerHeight > aspect) {
-          // fit based on height
-          scaler = height / containerHeight;
-        } else {
           // fit based on width
-          scaler = width / containerWidth;
+          $(this._image).css({
+            width: "100%",
+            height: "auto"
+          });
+        } else {
+          // fit based on height
+          $(this._image).css({
+            width: "auto",
+            height: "100%"
+          });
         }
-        height *= scaler;
-        width *= scaler;
-
-        this._image.setAttribute("width", width);
-        this._image.setAttribute("height", height);
       }
-
       break;
     case "fitaspect": {
       let width = parseInt(this._originalWidth);
       let height = parseInt(this._originalHeight);
       const aspect = width / height;
-      let scaler = 1;
       if (containerWidth / containerHeight > aspect) {
         // fit based on height
-        scaler = containerHeight / height;
+        $(this._image).css({
+          width: "auto",
+          height: "100%"
+        });
       } else {
         // fit based on width
-        scaler = containerWidth / width;
+        $(this._image).css({
+          width: "100%",
+          height: "auto"
+        });
       }
-      height *= scaler;
-      width *= scaler;
-
-      this._image.setAttribute("width", width);
-      this._image.setAttribute("height", height);
     }
     break;
     case "none":
     default:
-      this._image.setAttribute("width", this._originalWidth);
-      this._image.setAttribute("height", this._originalHeight);
+      $(this._image).css({
+        width: "auto",
+        height: "auto"
+      });
     }
 
     return this._image;

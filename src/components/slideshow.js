@@ -217,7 +217,7 @@ export default class Slideshow {
     for (var i = 0; i < this._imageWrappers.length; i++) {
       this._imageWrappers[i].reScale(containerWidth, containerHeight, scaleMode);
 
-      this._imageWrappers[i].centerInContainer(containerWidth, containerHeight);
+      this._imageWrappers[i].centerInContainer();
     }
   }
 
