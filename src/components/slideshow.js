@@ -5,6 +5,7 @@
  */
 import $ from "jquery";
 import Preloader from "./preloader";
+import ImageWrapper from "./imageWrapper";
 import {
   isString,
   isUndefined,
@@ -24,48 +25,42 @@ export default class Slideshow {
   constructor() {
     // default initialization
     this._currentIndex = 0;
+    this._slideshowContainer = undefined;
     this._imageContainers = [];
-    this._images = [];
+    this._imageWrappers = [];
+    this._imageMargin = {
+      margin: 0
+    };
+    this._imageScaleMode = "none";
     this._interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this._intervalId = -1;
     this._baseZIndex = BASE_Z_INDEX;
-    // this callback, if provided, well be called each time the image changes
-    this._imageChangedCallback = undefined;
 
+    this._imageChangedCallback = undefined;
     this._preloader = undefined;
   }
 
   init(config) {
     let error_code = 0;
     if (isString(config.slideshowContainer) && $(config.slideshowContainer).length) {
-      // those selectors ensure that we only have the containers and images that are connected
-      // as parent - child
+
+      this._slideshowContainer = config.slideshowContainer;
+
       this._imageContainers = $(
         config.slideshowContainer + " .mibreit-imageElement"
       ).has("img");
-      this._images = $(
+
+      const images = $(
         config.slideshowContainer + " .mibreit-imageElement > img"
       );
-      if (this._imageContainers.length > 0 && this._imageContainers.length === this._images.length) {
-        let margin = {
-          margin: 0
-        };
-        if (isObject(config.imageContainerMargin)) {
-          margin = config.imageContainerMargin;
-        }
 
-        let scaleMode = "none";
-        if (isString(config.imageScaleMode)) {
-          scaleMode = config.imageScaleMode;
-        }
+      if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
+        this._wrapImages(images);
 
         const _baseZIndex = $(config.slideshowContainer).css("z-index");
         if (isNumber(_baseZIndex)) {
           this._baseZIndex = _baseZIndex;
         }
-
-        const containerWidth = $(config.slideshowContainer).width();
-        const containerHeight = $(config.slideshowContainer).height();
 
         if (isNumber(config.interval)) {
           this._interval = config.interval;
@@ -79,34 +74,14 @@ export default class Slideshow {
           isBoolean(config.slideshowHighlighting) &&
           config.slideshowHighlighting === true
         ) {
-          if ($(".mibreit-slideshow-highlight").length === 0) {
-            $("body").append(
-              "<div class='mibreit-slideshow-highlight'/></div>"
-            );
-          }
-
-          $(config.slideshowContainer).bind("mouseenter", function () {
-            $(".mibreit-slideshow-highlight").animate({
-                opacity: 0.75
-              },
-              IMAGE_ANIMATION_TIME
-            );
-          });
-
-          $(config.slideshowContainer).bind("mouseleave", function () {
-            $(".mibreit-slideshow-highlight").animate({
-                opacity: 0.0
-              },
-              IMAGE_ANIMATION_TIME
-            );
-          });
+          this._prepareHighlighting();
         }
 
-        this._prepareContainers(containerWidth, containerHeight, margin);
+        // finally prepare the images
+        this.reinitSize(config.imageContainerMargin, config.imageScaleMode);
 
-        this._prepare_Images(containerWidth, containerHeight, scaleMode);
-
-        this._preloader = new Preloader(this._images, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
+        // and start preloading
+        this._preloader = new Preloader(this._imageWrappers, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
       } else {
         error_code = 202;
       }
@@ -114,6 +89,22 @@ export default class Slideshow {
       error_code = 201;
     }
     return error_code;
+  }
+
+  reinitSize(margin, scaleMode) {
+    if (isString(this._slideshowContainer) && $(this._slideshowContainer).length) {
+      if (isObject(margin)) {
+        this._imageMargin = margin;
+      }
+
+      if (isString(scaleMode)) {
+        this._imageScaleMode = scaleMode;
+      }
+      const containerWidth = $(this._slideshowContainer).width();
+      const containerHeight = $(this._slideshowContainer).height();
+      this._prepareContainers(containerWidth, containerHeight, this._imageMargin);
+      this._prepare_Images(containerWidth, containerHeight, this._imageScaleMode);
+    }
   }
 
   start() {
@@ -131,18 +122,12 @@ export default class Slideshow {
 
   showImage = newIndex => {
     if (this._isValidIndex(newIndex) && newIndex != this._currentIndex) {
-      if (!this._images[newIndex].hasAttribute("data-src")) {
+      if (this._imageWrappers[newIndex].wasLoaded()) {
         this._changeCurrentImage(newIndex);
       } else {
-        let self = this; // capture this pointer for closure
-        this._images[newIndex].onload = function () {
-          this.removeAttribute("data-src");
-          self._changeCurrentImage(newIndex);
-        };
-        this._images[newIndex].setAttribute(
-          "src",
-          this._images[newIndex].getAttribute("data-src")
-        );
+        this._preloader.loadImage(newIndex, () => {
+          this._changeCurrentImage(newIndex);
+        });
       }
     }
   };
@@ -167,19 +152,50 @@ export default class Slideshow {
 
   getCurrentImageTitle() {
     if (this._isValidIndex(this._currentIndex)) {
-      return this._images[this._currentIndex].getAttribute("data-title");
+      return this._imageWrappers[this._currentIndex].getTitle();
     } else {
       return "";
     }
   }
 
+
   // private helper methods
+
+  _wrapImages(images) {
+    for (let i = 0; i < images.length; i++) {
+      this._imageWrappers.push(new ImageWrapper(images[i]));
+    }
+  }
+
   _isValidIndex(index) {
     return (
       index >= 0 &&
-      index < this._images.length &&
       index < this._imageContainers.length
     );
+  }
+
+  _prepareHighlighting() {
+    if ($(".mibreit-slideshow-highlight").length === 0) {
+      $("body").append(
+        "<div class='mibreit-slideshow-highlight'/></div>"
+      );
+    }
+
+    $(this._slideshowContainer).bind("mouseenter", function () {
+      $(".mibreit-slideshow-highlight").animate({
+          opacity: 0.75
+        },
+        IMAGE_ANIMATION_TIME
+      );
+    });
+
+    $(this._slideshowContainer).bind("mouseleave", function () {
+      $(".mibreit-slideshow-highlight").animate({
+          opacity: 0.0
+        },
+        IMAGE_ANIMATION_TIME
+      );
+    });
   }
 
   _prepareContainers(width, height, marginObj) {
@@ -198,95 +214,11 @@ export default class Slideshow {
   }
 
   _prepare_Images(containerWidth, containerHeight, scaleMode) {
-    for (var i = 0; i < this._images.length; i++) {
-      this._prepareImage(
-        this._images[i],
-        containerWidth,
-        containerHeight,
-        scaleMode
-      );
+    for (var i = 0; i < this._imageWrappers.length; i++) {
+      this._imageWrappers[i].reScale(containerWidth, containerHeight, scaleMode);
+
+      this._imageWrappers[i].centerInContainer(containerWidth, containerHeight);
     }
-  }
-
-  _prepareImage(image, containerWidth, containerHeight, scaleMode) {
-    if (image.hasAttribute("width") && image.hasAttribute("height")) {
-      this._scaleImage(image, containerWidth, containerHeight, scaleMode);
-
-      this._positionImage(image, containerWidth, containerHeight);
-    }
-
-    if (image.hasAttribute("title")) {
-      // we do this to ensure that title will not show up on hover
-      var title = image.getAttribute("title");
-      image.removeAttribute("title");
-      image.setAttribute("data-title", title);
-    }
-  }
-
-  _scaleImage(image, containerWidth, containerHeight, scaleMode) {
-    switch (scaleMode) {
-      case "stretch":
-        image.setAttribute("width", containerWidth);
-        image.setAttribute("height", containerHeight);
-        break;
-      case "expand": {
-        let width = parseInt(image.getAttribute("width"));
-        let height = parseInt(image.getAttribute("height"));
-        const aspect = width / height;
-        let scaler = 1;
-        if (containerWidth / containerHeight > aspect) {
-          // fit based on height
-          scaler = height / containerHeight;
-        } else {
-          // fit based on width
-          scaler = width / containerWidth;
-        }
-        height *= scaler;
-        width *= scaler;
-
-        image.setAttribute("width", width);
-        image.setAttribute("height", height);
-      }
-
-      break;
-    case "fitaspect": {
-      let width = parseInt(image.getAttribute("width"));
-      let height = parseInt(image.getAttribute("height"));
-      const aspect = width / height;
-      let scaler = 1;
-      if (containerWidth / containerHeight > aspect) {
-        // fit based on height
-        scaler = containerHeight / height;
-      } else {
-        // fit based on width
-        scaler = containerWidth / width;
-      }
-      height *= scaler;
-      width *= scaler;
-
-      image.setAttribute("width", width);
-      image.setAttribute("height", height);
-    }
-    break;
-    case "none":
-    default:
-      // no scaling applied
-    }
-  }
-
-  _positionImage(image, containerWidth, containerHeight) {
-    const width = parseInt(image.getAttribute("width"));
-    const height = parseInt(image.getAttribute("height"));
-
-    const x = (width + containerWidth) / 2 - width;
-    const y = (height + containerHeight) / 2 - height;
-
-    $(image).css({
-      left: x
-    });
-    $(image).css({
-      top: y
-    });
   }
 
   _changeCurrentImage(newIndex) {
@@ -308,18 +240,10 @@ export default class Slideshow {
     });
     this._currentIndex = newIndex;
 
-    this._imageChanged();
+    if (this._imageChangedCallback !== undefined) {
+      this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
+    }
 
     this._preloader.setCurrentIndex(this._currentIndex);
-  }
-
-  _imageChanged() {
-    if (this._imageChangedCallback !== undefined) {
-      const title = this._images[this._currentIndex].getAttribute("data-title");
-
-      if (title !== null) {
-        this._imageChangedCallback(this._currentIndex, title);
-      }
-    }
   }
 }

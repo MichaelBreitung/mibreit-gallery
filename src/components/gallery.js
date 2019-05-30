@@ -20,6 +20,7 @@ const HOVER_ANIMATION_TIME = 400;
 
 export default class Gallery {
   constructor() {
+    this._originalConfig = undefined;
     // default values are used if config does not provide alternative values
     this._slideshowContainer = ".mibreit-slideshow";
     this._thumbviewContainer = ".mibreit-thumbs";
@@ -39,6 +40,8 @@ export default class Gallery {
 
   init(config) {
     let error_code = 0;
+
+    this._originalConfig = config;
 
     if (isString(config.slideshowContainer)) {
       this._slideshowContainer = config.slideshowContainer;
@@ -215,7 +218,11 @@ export default class Gallery {
       this._mibreitSlideshow.showNextImage();
     } else if (this._fullscreenController) {
       // fullscreen        
-      this._fullscreenController.toggleFullscreen();
+      if (this._fullscreenController.toggleFullscreen()) {
+        this._mibreitSlideshow.reinitSize(0, "none");
+      } else {
+        this._mibreitSlideshow.reinitSize(this._originalConfig.imageContainerMargin, this._originalConfig.imageScaleMode);
+      }
     }
   };
 
