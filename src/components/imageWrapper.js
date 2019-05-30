@@ -11,19 +11,21 @@ import {
 export default class ImageWrapper {
   constructor(image) {
     this._image = image;
-    this._title = this._image.getAttribute("data-title");
     this._originalWidth = parseInt(this._image.getAttribute("width"));
     this._originalHeight = parseInt(this._image.getAttribute("height"));
+    this._title = "";
 
     // center image
     $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
 
     if (this._image.hasAttribute("title")) {
       // we do this to ensure that title will not show up on hover
-      var title = this._image.getAttribute("title");
+      const title = this._image.getAttribute("title");
       this._image.removeAttribute("title");
       this._image.setAttribute("data-title", title);
     }
+
+    this._title = this._image.getAttribute("data-title");
   }
 
   /**   
