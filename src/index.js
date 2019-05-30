@@ -8,6 +8,7 @@ import "./images/next.png";
 import "./images/previous.png";
 import "./images/image-placeholder-transparent.png";
 import "./images/exit-fullscreen.png";
+import "./images/fullscreen.png";
 
 import {
   isUndefined

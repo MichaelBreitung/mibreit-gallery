@@ -34,6 +34,7 @@ export default class Gallery {
     this._mibreitThumbview = undefined;
     this._mibreitSlideshow = undefined;
     this._fullscreenController = undefined;
+    this._fullscreenEnterButton = undefined;
   }
 
   init(config) {
@@ -81,6 +82,8 @@ export default class Gallery {
       config.imageScaleMode = this._scaleMode;
     }
     if (isBoolean(config.allowFullscreen)) {
+      $(this._slideshowContainer).append("<div class=\"mibreit-enter-fullscreen-button\"></div>");
+      this._fullscreenEnterButton = $(".mibreit-enter-fullscreen-button");
       const fullscreenController = new FullscreenController();
       if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer,
           config.titleContainer, this._fullscreenChangedCallback)) {
@@ -121,7 +124,6 @@ export default class Gallery {
   }
 
   _initThumbview() {
-
     this._mibreitThumbview = new Thumbview();
 
     if (
@@ -141,66 +143,93 @@ export default class Gallery {
           thumbviewContainer: this._thumbviewContainer,
         })
       ) {
-
-        const self = this;
-        $(this._thumbviewPrevious).bind("click", function () {
-          self._mibreitScroller.scrollLeft(6);
-        });
-
-        $(this._thumbviewNext).bind("click", function () {
-          self._mibreitScroller.scrollRight(6);
-        });
+        $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
+        $(this._thumbviewNext).bind("click", this._scrollRightCallback);
       }
     }
   }
 
   _initKeyAndMouseEvents() {
+    $(this._slideshowContainer).bind("mouseenter", this._mouseEnterCallback);
+
+    $(this._slideshowContainer).bind("mouseleave", this._mouseLeaveCallback);
+
     const self = this;
-
-    $(this._slideshowContainer).bind("mouseenter", function () {
-      $(self._slideshowNext).animate({
-          opacity: 0.4
-        },
-        HOVER_ANIMATION_TIME
-      );
-      $(self._slideshowPrevious).animate({
-          opacity: 0.4
-        },
-        HOVER_ANIMATION_TIME
-      );
-    });
-
-    $(this._slideshowContainer).bind("mouseleave", function () {
-      $(self._slideshowNext).animate({
-          opacity: 0.0
-        },
-        HOVER_ANIMATION_TIME
-      );
-      $(self._slideshowPrevious).animate({
-          opacity: 0.0
-        },
-        HOVER_ANIMATION_TIME
-      );
-    });
-
     $(this._slideshowContainer).bind("click", function (event) {
       var offset = $(this).offset();
       var relativeX = event.pageX - offset.left;
       self._containerClickedCallback(relativeX, $(this).width());
     });
 
-    $(document).bind("keydown", function (event) {
-      self._keyDownCallback(event.which);
-    });
+    if (this._fullscreenEnterButton) {
+      $(this._fullscreenEnterButton).bind("click", this._fullscreenEnterClickCallback);
+    }
+
+    $(document).bind("keydown", this._keyDownCallback);
   }
 
   _updateTitle(title) {
     $(this._titleContainer).html("<h3>" + title + "</h3>");
   }
 
+  // callbacks 
+
   _thumbClickCallback = id => {
     this._mibreitSlideshow.showImage(id);
   };
+
+  _fullscreenEnterClickCallback = (event) => {
+    this._fullscreenController.toggleFullscreen();
+    event.stopPropagation();
+  }
+
+  _scrollLeftCallback = () => {
+    this._mibreitScroller.scrollLeft(6);
+  }
+
+  _scrollRightCallback = () => {
+    this._mibreitScroller.scrollRight(6);
+  }
+
+  _mouseEnterCallback = () => {
+    $(this._slideshowNext).animate({
+        opacity: 0.4
+      },
+      HOVER_ANIMATION_TIME
+    );
+    $(this._slideshowPrevious).animate({
+        opacity: 0.4
+      },
+      HOVER_ANIMATION_TIME
+    );
+    if (this._fullscreenEnterButton && !this._fullscreenController.isFullscreen()) {
+      $(this._fullscreenEnterButton).animate({
+          opacity: 0.4
+        },
+        HOVER_ANIMATION_TIME
+      );
+    }
+  }
+
+  _mouseLeaveCallback = () => {
+    $(this._slideshowNext).animate({
+        opacity: 0.0
+      },
+      HOVER_ANIMATION_TIME
+    );
+    $(this._slideshowPrevious).animate({
+        opacity: 0.0
+      },
+      HOVER_ANIMATION_TIME
+    );
+    if (this._fullscreenEnterButton && !this._fullscreenController.isFullscreen()) {
+      $(this._fullscreenEnterButton).animate({
+          opacity: 0.0
+        },
+        HOVER_ANIMATION_TIME
+      );
+    }
+  }
 
   _imageChangedCallback = (id, title) => {
     if (this._mibreitScroller !== undefined) {
@@ -213,6 +242,9 @@ export default class Gallery {
 
   _fullscreenChangedCallback = (fullscreen) => {
     if (fullscreen) {
+      $(this._fullscreenEnterButton).css({
+        opacity: 0.0,
+      });
       this._mibreitSlideshow.reinitSize("fitaspect");
       $(window).resize(() => {
         this._mibreitSlideshow.reinitSize("fitaspect");
@@ -228,13 +260,11 @@ export default class Gallery {
       this._mibreitSlideshow.showPreviousImage();
     } else if (relativeX > containerWidth * 2 / 3) {
       this._mibreitSlideshow.showNextImage();
-    } else if (this._fullscreenController) {
-      // fullscreen        
-      this._fullscreenController.toggleFullscreen();
     }
   };
 
-  _keyDownCallback = key => {
+  _keyDownCallback = event => {
+    const key = event.which;
     if (key === 37) {
       // left arrow
       this._mibreitSlideshow.showPreviousImage();
