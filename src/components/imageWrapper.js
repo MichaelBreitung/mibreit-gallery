@@ -12,8 +12,8 @@ export default class ImageWrapper {
   constructor(image) {
     this._image = image;
     this._title = this._image.getAttribute("data-title");
-    this._originalWidth = this._image.getAttribute("width");
-    this._originalHeight = this._image.getAttribute("height");
+    this._originalWidth = parseInt(this._image.getAttribute("width"));
+    this._originalHeight = parseInt(this._image.getAttribute("height"));
 
     // center image
     $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
@@ -67,9 +67,7 @@ export default class ImageWrapper {
         });
         break;
       case "expand": {
-        let width = parseInt(this._originalWidth);
-        let height = parseInt(this._originalHeight);
-        const aspect = width / height;
+        const aspect = this._originalWidth / this._originalHeight;
         if (containerWidth / containerHeight > aspect) {
           // fit based on width
           $(this._image).css({
@@ -86,22 +84,36 @@ export default class ImageWrapper {
       }
       break;
     case "fitaspect": {
-      let width = parseInt(this._originalWidth);
-      let height = parseInt(this._originalHeight);
-      const aspect = width / height;
+      const aspect = this._originalWidth / this._originalHeight;
+
       if (containerWidth / containerHeight > aspect) {
         // fit based on height
-        $(this._image).css({
-          width: "auto",
-          height: "100%"
-        });
+        if (containerHeight <= this._originalHeight) {
+          $(this._image).css({
+            width: "auto",
+            height: "100%"
+          });
+        } else {
+          $(this._image).css({
+            width: "auto",
+            height: "auto"
+          });
+        }
       } else {
-        // fit based on width
-        $(this._image).css({
-          width: "100%",
-          height: "auto"
-        });
+        // fit based on width     
+        if (containerWidth <= this._originalWidth) {
+          $(this._image).css({
+            width: "100%",
+            height: "auto"
+          });
+        } else {
+          $(this._image).css({
+            width: "auto",
+            height: "auto"
+          });
+        }
       }
+
     }
     break;
     case "none":

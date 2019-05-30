@@ -95,7 +95,7 @@ export default class Gallery {
     if (error_code === 0) {
 
       if (this._showThumbview) {
-        this._initThumbview(config);
+        this._initThumbview();
       }
 
       this._initKeyAndMouseEvents();
@@ -119,8 +119,8 @@ export default class Gallery {
     });
   }
 
-  _initThumbview(config) {
-    const self = this;
+  _initThumbview() {
+
     this._mibreitThumbview = new Thumbview();
 
     if (
@@ -137,10 +137,11 @@ export default class Gallery {
       if (
         this._mibreitScroller.init({
           scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
-          ...config
+          thumbviewContainer: this._thumbviewContainer,
         })
       ) {
 
+        const self = this;
         $(this._thumbviewPrevious).bind("click", function () {
           self._mibreitScroller.scrollLeft(6);
         });
@@ -217,9 +218,13 @@ export default class Gallery {
     } else if (this._fullscreenController) {
       // fullscreen        
       if (this._fullscreenController.toggleFullscreen()) {
-        this._mibreitSlideshow.reinitSize("none");
+        this._mibreitSlideshow.reinitSize("fitaspect");
+        $(window).resize(() => {
+          this._mibreitSlideshow.reinitSize("fitaspect");
+        });
       } else {
         this._mibreitSlideshow.reinitSize(this._scaleMode);
+        $(window).off("resize");
       }
     }
   };

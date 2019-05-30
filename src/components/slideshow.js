@@ -74,6 +74,9 @@ export default class Slideshow {
           this._prepareHighlighting();
         }
 
+        // prepare the containers
+        this._prepareContainers();
+
         // finally prepare the images
         this.reinitSize(config.imageScaleMode);
 
@@ -95,7 +98,7 @@ export default class Slideshow {
       }
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
-      this._prepareContainers();
+
       this._prepare_Images(containerWidth, containerHeight, this._imageScaleMode);
     }
   }
