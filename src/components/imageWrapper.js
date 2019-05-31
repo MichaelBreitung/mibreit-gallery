@@ -87,7 +87,6 @@ export default class ImageWrapper {
       break;
     case "fitaspect": {
       const aspect = this._originalWidth / this._originalHeight;
-
       if (containerWidth / containerHeight > aspect) {
         // fit based on height
         if (containerHeight <= this._originalHeight) {

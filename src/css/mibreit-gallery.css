@@ -1,145 +1,149 @@
 /* Slideshow styles */
 .mibreit-slideshow {
-    position: relative;
-    left: 0px;
-    margin: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: 720px;
-    height: 680px;
-    overflow: hidden;
+  position: relative;
+  left: 0px;
+  margin: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 720px;
+  height: 680px;
+  overflow: hidden;
 }
 
 .mibreit-slideshow-next {
-    position: absolute;
-    z-index: 100;
-    background-image: url("../images/next-image.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 36px;
-    height: 50px;
-    right: 5px;
-    top: 45%;
-    opacity: 0.0;
+  position: absolute;
+  z-index: 100;
+  background-image: url("../images/next-image.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 36px;
+  height: 50px;
+  right: 5px;
+  top: 45%;
+  opacity: 0;
 }
 
 .mibreit-slideshow-previous {
-    position: absolute;
-    z-index: 100;
-    background-image: url("../images/previous-image.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 36px;
-    height: 50px;
-    left: 5px;
-    top: 45%;
-    opacity: 0.0;
+  position: absolute;
+  z-index: 100;
+  background-image: url("../images/previous-image.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 36px;
+  height: 50px;
+  left: 5px;
+  top: 45%;
+  opacity: 0;
 }
 
 /* Title Styles */
 
 .mibreit-slideshow-title {
-    position: relative;
-    margin: auto;
-    width: 720px;
-    text-align: center;
+  position: relative;
+  margin: auto;
+  width: 720px;
+  text-align: center;
 }
 
 /* Thumbview styles */
 
 .mibreit-thumbview {
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    top: 0.5rem;
-    width: 720px;
-    height: 100px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0.5rem;
+  width: 720px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .mibreit-thumbview-previous {
-    width: 30px;
-    height: 30px;
-    background-image: url("../images/previous.png");
-    background-repeat: no-repeat;
-    background-position: center;
+  width: 30px;
+  height: 30px;
+  background-image: url("../images/previous.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .mibreit-thumbview-next {
-    width: 30px;
-    height: 30px;
-    background-image: url("../images/next.png");
-    background-repeat: no-repeat;
-    background-position: center;
+  width: 30px;
+  height: 30px;
+  background-image: url("../images/next.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .mibreit-thumbs {
-
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .mibreit-thumbs-scroller {
-    position: relative;
-    display: flex;
-    flex-direction: row;
+  position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
 /* special styles */
 
 .mibreit-slideshow-highlight {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: black;
-    opacity: 0;
-    pointer-events: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: black;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .mibreit-regular {
-    position: relative;
+  position: relative;
 }
 
 .mibreit-fullscreen {
-    position: fixed;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: #181818;
-    z-index: 20;
+  position: fixed;
+  box-sizing: border-box;
+  background-color: #181818;
+  overflow: hidden;
+  top: 0px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
 }
 
 .mibreit-enter-fullscreen-button {
-    position: absolute;
-    z-index: 100;
-    background-image: url("../images/fullscreen.png");
-    background-size: 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 40px;
-    height: 40px;
-    right: 5px;
-    top: 5px;
-    opacity: 0.0;
+  position: absolute;
+  z-index: 100;
+  background-image: url("../images/fullscreen.png");
+  background-size: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+  right: 5px;
+  top: 5px;
+  opacity: 0;
 }
 
 .mibreit-fullscreen>.exit-fullscreen {
-    position: absolute;
-    z-index: 100;
-    background-image: url("../images/exit-fullscreen.png");
-    background-size: 64px;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 64px;
-    height: 64px;
-    opacity: 0.8;
-    right: 25px;
-    top: 25px;
+  position: absolute;
+  z-index: 100;
+  background-image: url("../images/exit-fullscreen.png");
+  background-size: 64px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 64px;
+  height: 64px;
+  opacity: 0.8;
+  right: 25px;
+  top: 25px;
 }

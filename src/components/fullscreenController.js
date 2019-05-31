@@ -59,10 +59,16 @@ export default class FullscreenController {
       $(this._slideshowContainer).appendTo(".mibreit-fullscreen");
       $(this._slideshowContainer).css({
         width: "100%",
-        height: "80%"
+        "flex-grow": 1,
       });
       $(this._thumbviewContainer).appendTo(".mibreit-fullscreen");
+      $(this._thumbviewContainer).css({
+        "flex-grow": 0,
+      });
       $(this._titleContainer).appendTo(".mibreit-fullscreen");
+      $(this._titleContainer).css({
+        "flex-grow": 0,
+      });
       this._isFullscreen = true;
     }
 

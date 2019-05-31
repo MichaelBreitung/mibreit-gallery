@@ -11,7 +11,6 @@ import {
   isUndefined,
   isNumber,
   isBoolean,
-  isObject
 } from "../tools/typeChecks";
 
 import {
@@ -99,7 +98,7 @@ export default class Slideshow {
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
 
-      this._prepare_Images(containerWidth, containerHeight, this._imageScaleMode);
+      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, this._imageScaleMode);
     }
   }
 
@@ -205,12 +204,6 @@ export default class Slideshow {
     });
   }
 
-  _prepare_Images(containerWidth, containerHeight, scaleMode) {
-    for (var i = 0; i < this._imageWrappers.length; i++) {
-      this._imageWrappers[i].applyScaleMode(containerWidth, containerHeight, scaleMode);
-    }
-  }
-
   _changeCurrentImage(newIndex) {
     $(this._imageContainers[newIndex]).animate({
         opacity: 1.0
@@ -229,6 +222,8 @@ export default class Slideshow {
       "z-index": this._baseZIndex
     });
     this._currentIndex = newIndex;
+
+    this.reinitSize();
 
     if (this._imageChangedCallback !== undefined) {
       this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
