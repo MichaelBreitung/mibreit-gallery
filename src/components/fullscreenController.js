@@ -12,7 +12,12 @@ export default class FullscreenController {
     this._fullscreenChangedCallback = undefined;
   }
 
-  init(slideshowContainer, thumbviewContainer, titleContainer, fullScreenChangedCallback) {
+  init(
+    slideshowContainer,
+    thumbviewContainer,
+    titleContainer,
+    fullScreenChangedCallback
+  ) {
     let success = false;
     if ($(slideshowContainer).length) {
       // thumbview is optional
@@ -37,38 +42,43 @@ export default class FullscreenController {
         width: this._oldWidth,
         height: this._oldHeight
       });
-      $(this._thumbviewContainer).appendTo(".mibreit-regular");
-      $(this._titleContainer).appendTo(".mibreit-regular");
+      if (this._thumbviewContainer) {
+        $(this._thumbviewContainer).appendTo(".mibreit-regular");
+      }
+      if (this._titleContainer) {
+        $(this._titleContainer).appendTo(".mibreit-regular");
+      }
       $(".mibreit-fullscreen").remove();
       this._isFullscreen = false;
     } else {
-      // put slideshowContainer into fullscreen
       if ($(".mibreit-regular").length === 0) {
-        // attach regular wrapper, which is used as placeholder for gallery until we
-        // deactivate fullscreen again
-        $(this._slideshowContainer).wrap("<div class=\"mibreit-regular\"></div>");
-        $(this._thumbviewContainer).appendTo(".mibreit-regular");
-        $(this._titleContainer).appendTo(".mibreit-regular");
+        this.createRegularWrapper();
       }
 
       this._oldWidth = $(this._slideshowContainer).css("width");
       this._oldHeight = $(this._slideshowContainer).css("height");
 
-      $("body").append("<div class='mibreit-fullscreen'><div class='exit-fullscreen'></div></div>");
+      $("body").append(
+        "<div class='mibreit-fullscreen'><div class='exit-fullscreen'></div></div>"
+      );
       $(".exit-fullscreen").click(this.toggleFullscreen);
       $(this._slideshowContainer).appendTo(".mibreit-fullscreen");
       $(this._slideshowContainer).css({
         width: "100%",
-        "flex-grow": 1,
+        "flex-grow": 1
       });
-      $(this._thumbviewContainer).appendTo(".mibreit-fullscreen");
-      $(this._thumbviewContainer).css({
-        "flex-grow": 0,
-      });
-      $(this._titleContainer).appendTo(".mibreit-fullscreen");
-      $(this._titleContainer).css({
-        "flex-grow": 0,
-      });
+      if (this._thumbviewContainer) {
+        $(this._thumbviewContainer).appendTo(".mibreit-fullscreen");
+        $(this._thumbviewContainer).css({
+          "flex-grow": 0
+        });
+      }
+      if (this._titleContainer) {
+        $(this._titleContainer).appendTo(".mibreit-fullscreen");
+        $(this._titleContainer).css({
+          "flex-grow": 0
+        });
+      }
       this._isFullscreen = true;
     }
 
@@ -76,5 +86,16 @@ export default class FullscreenController {
       this._fullscreenChangedCallback(this._isFullscreen);
     }
     return this._isFullscreen;
+  };
+
+  /** attach regular wrapper, which is used as placeholder for gallery until we deactivate fullscreen again */
+  createRegularWrapper() {
+    $(this._slideshowContainer).wrap('<div class="mibreit-regular"></div>');
+    if (this._thumbviewContainer) {
+      $(this._thumbviewContainer).appendTo(".mibreit-regular");
+    }
+    if (this._titleContainer) {
+      $(this._titleContainer).appendTo(".mibreit-regular");
+    }
   }
 }

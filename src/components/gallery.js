@@ -83,7 +83,7 @@ export default class Gallery {
     }
     if (isBoolean(config.allowFullscreen)) {
       $(this._slideshowContainer).append("<div class=\"mibreit-enter-fullscreen-button\"></div>");
-      this._fullscreenEnterButton = $(".mibreit-enter-fullscreen-button");
+      this._fullscreenEnterButton = $(config.slideshowContainer + " .mibreit-enter-fullscreen-button");
       const fullscreenController = new FullscreenController();
       if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer,
           config.titleContainer, this._fullscreenChangedCallback)) {
@@ -202,12 +202,20 @@ export default class Gallery {
       },
       HOVER_ANIMATION_TIME
     );
-    if (this._fullscreenEnterButton && !this._fullscreenController.isFullscreen()) {
-      $(this._fullscreenEnterButton).animate({
-          opacity: 0.4
-        },
-        HOVER_ANIMATION_TIME
-      );
+    if (this._fullscreenEnterButton) {
+      if (!this._fullscreenController.isFullscreen()) {
+        $(this._fullscreenEnterButton).animate({
+            opacity: 0.4
+          },
+          HOVER_ANIMATION_TIME
+        );
+      } else {
+        $(this._fullscreenEnterButton).animate({
+            opacity: 0.0
+          },
+          HOVER_ANIMATION_TIME
+        );
+      }
     }
   }
 
@@ -222,7 +230,7 @@ export default class Gallery {
       },
       HOVER_ANIMATION_TIME
     );
-    if (this._fullscreenEnterButton && !this._fullscreenController.isFullscreen()) {
+    if (this._fullscreenEnterButton) {
       $(this._fullscreenEnterButton).animate({
           opacity: 0.0
         },
@@ -242,12 +250,12 @@ export default class Gallery {
 
   _fullscreenChangedCallback = (fullscreen) => {
     if (fullscreen) {
-      $(this._fullscreenEnterButton).css({
-        opacity: 0.0,
-      });
       this._mibreitSlideshow.reinitSize("fitaspect");
       $(window).resize(() => {
         this._mibreitSlideshow.reinitSize("fitaspect");
+      });
+      $(this._fullscreenEnterButton).css({
+        opacity: 0.0,
       });
     } else {
       this._mibreitSlideshow.reinitSize(this._scaleMode);
