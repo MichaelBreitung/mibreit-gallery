@@ -18,6 +18,11 @@ export default class ImageWrapper {
     // center image
     $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
 
+    // no context menu
+    $(this._image).contextmenu(function () {
+      return false;
+    });
+
     if (this._image.hasAttribute("title")) {
       // we do this to ensure that title will not show up on hover
       const title = this._image.getAttribute("title");

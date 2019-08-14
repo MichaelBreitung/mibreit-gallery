@@ -89,6 +89,11 @@ export default class Thumbview {
       };
       image.setAttribute("src", image.getAttribute("data-src"));
     }
+
+    // no context menu
+    $(image).contextmenu(function () {
+      return false;
+    });
   }
 
   _scaleThumb(image, thumbWidth, thumbHeight) {
