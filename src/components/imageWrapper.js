@@ -1,12 +1,12 @@
-import {
-  isUndefined
-} from "../tools/typeChecks";
-
 /**
  * @class ImageScaler
  * @author Michael Breitung
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
+
+import {
+  isUndefined
+} from "../tools/typeChecks";
 
 export default class ImageWrapper {
   constructor(image) {
@@ -17,6 +17,12 @@ export default class ImageWrapper {
 
     // center image
     $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
+
+
+    // disable drag
+    $(this._image).on('dragstart', function () {
+      return false;
+    });
 
     // no context menu
     $(this._image).contextmenu(function () {

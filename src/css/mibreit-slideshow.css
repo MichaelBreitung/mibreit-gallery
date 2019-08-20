@@ -24,3 +24,15 @@
 .mibreit-imageElement h3 {
   margin-left: -4000px;
 }
+
+.mibreit-contextMenu {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  z-index: 11;
+  text-align: center;
+  font-size: 1.5rem;
+  background-color: #79756f;
+}
