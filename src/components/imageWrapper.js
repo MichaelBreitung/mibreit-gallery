@@ -40,9 +40,9 @@ export default class ImageWrapper {
   }
 
   /**   
-   * @param {Optional callback that will be called once image loading is complete} callback 
+   * @param callback Optional callback that will be called once image loading is complete
    * 
-   * @return true if loading was started, false if image was already loaded
+   * @return {boolean} true if loading was started, false if image was already loaded
    */
   loadImage(callback) {
     if (!this.wasLoaded()) {

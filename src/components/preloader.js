@@ -13,10 +13,10 @@ const PRELOAD_LEFT_SIZE = 3;
 
 export default class Preloader {
   /**
-   * @param {array of ImageWrapper objects, which contain the images to preload} imageWrappers
-   * @param {currently active image} currentIndex
-   * @param {Optional - number of images to preload before currentIndex} preloadLeftNr
-   * @param {Optional - number of images to preload after currentIndex} preloadRightNr
+   * @param {Array<string>} imageWrappers array of ImageWrapper objects, which contain the images to preload
+   * @param {number} currentIndex currently active image
+   * @param {number} preloadLeftNr Optional - number of images to preload before currentIndex
+   * @param {number} preloadRightNr Optional - number of images to preload after currentIndex} 
    */
   constructor(imageWrappers, currentIndex, preloadLeftNr, preloadRightNr) {
     this._currentIndex = currentIndex;
