@@ -96,7 +96,7 @@ export default class Slideshow {
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
 
-      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, scaleMode);
+      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, this._scaleMode);
     }
   }
 
