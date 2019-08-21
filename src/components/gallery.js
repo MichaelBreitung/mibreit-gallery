@@ -4,6 +4,12 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 import $ from "jquery";
+import {
+  handleSwipe,
+  SWIPE_RIGHT,
+  SWIPE_LEFT,
+  CLICK
+} from "jquery-swipe-handler";
 import Thumbview from "./thumbview";
 import Slideshow from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
@@ -154,12 +160,7 @@ export default class Gallery {
 
     $(this._slideshowContainer).bind("mouseleave", this._mouseLeaveCallback);
 
-    const self = this;
-    $(this._slideshowContainer).bind("click", function (event) {
-      var offset = $(this).offset();
-      var relativeX = event.pageX - offset.left;
-      self._containerClickedCallback(relativeX, $(this).width());
-    });
+    handleSwipe(this._slideshowContainer, [SWIPE_LEFT, SWIPE_RIGHT, CLICK], this._swipe);
 
     if (this._fullscreenEnterButton) {
       $(this._fullscreenEnterButton).bind("click", this._fullscreenEnterClickCallback);
@@ -236,6 +237,21 @@ export default class Gallery {
         },
         HOVER_ANIMATION_TIME
       );
+    }
+  }
+
+  _swipe = (direction, x, y) => {
+    switch (direction) {
+      case SWIPE_LEFT:
+        this._mibreitSlideshow.showNextImage();
+        break;
+      case SWIPE_RIGHT:
+        this._mibreitSlideshow.showPreviousImage();
+        break;
+      case CLICK:
+        this._containerClickedCallback(x, $(this._slideshowContainer).width());
+        break;
+      default:
     }
   }
 
