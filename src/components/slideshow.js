@@ -6,13 +6,12 @@
 import $ from "jquery";
 import Preloader from "./preloader";
 import ImageWrapper, {
-  SCALE_MODE_NONE
+  SCALE_MODE_FITASPECT
 } from "./imageWrapper";
 import {
   isString,
   isUndefined,
   isNumber,
-  isBoolean,
 } from "../tools/typeChecks";
 
 import {
@@ -25,7 +24,6 @@ const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 
 // css classes
 const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";
-const HIGHLIGHT_CLASS = ".mibreit-slideshow-highlight";
 
 export default class Slideshow {
   constructor() {
@@ -37,6 +35,7 @@ export default class Slideshow {
     this._interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this._intervalId = -1;
     this._baseZIndex = BASE_Z_INDEX;
+    this._scaleMode = SCALE_MODE_FITASPECT;
 
     this._imageChangedCallback = undefined;
     this._preloader = undefined;
@@ -72,13 +71,6 @@ export default class Slideshow {
           this._imageChangedCallback = config.imageChangedCallback;
         }
 
-        if (
-          isBoolean(config.slideshowHighlighting) &&
-          config.slideshowHighlighting === true
-        ) {
-          this._prepareHighlighting();
-        }
-
         // prepare the containers
         this._prepareContainers();
 
@@ -98,7 +90,9 @@ export default class Slideshow {
 
   reinitSize(scaleMode) {
     if (isString(this._slideshowContainer) && $(this._slideshowContainer).length) {
-
+      if (isString(scaleMode)) {
+        this._scaleMode = scaleMode;
+      }
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
 
@@ -173,30 +167,6 @@ export default class Slideshow {
     );
   }
 
-  _prepareHighlighting() {
-    if ($(HIGHLIGHT_CLASS).length === 0) {
-      $("body").append(
-        `<div class="${HIGHLIGHT_CLASS.substr(1)}"/></div>`
-      );
-    }
-
-    $(this._slideshowContainer).bind("mouseenter", function () {
-      $(HIGHLIGHT_CLASS).animate({
-          opacity: 0.75
-        },
-        IMAGE_ANIMATION_TIME
-      );
-    });
-
-    $(this._slideshowContainer).bind("mouseleave", function () {
-      $(HIGHLIGHT_CLASS).animate({
-          opacity: 0.0
-        },
-        IMAGE_ANIMATION_TIME
-      );
-    });
-  }
-
   _prepareContainers() {
     $(this._imageContainers).css({
       opacity: 0.0
@@ -227,7 +197,7 @@ export default class Slideshow {
     });
     this._currentIndex = newIndex;
 
-    this.reinitSize();
+    this.reinitSize(this._scaleMode);
 
     if (this._imageChangedCallback !== undefined) {
       this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());

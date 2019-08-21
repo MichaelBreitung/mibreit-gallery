@@ -108,7 +108,7 @@ export default class ImageWrapper {
     case SCALE_MODE_FITASPECT: {
       const aspect = this._originalWidth / this._originalHeight;
       if (containerWidth / containerHeight > aspect) {
-        // fit based on height
+        // fit based on height        
         if (containerHeight <= this._originalHeight) {
           $(this._image).css({
             width: "auto",

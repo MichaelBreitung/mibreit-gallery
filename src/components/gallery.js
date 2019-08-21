@@ -18,6 +18,9 @@ import {
   isString,
   isBoolean
 } from "../tools/typeChecks";
+import {
+  SCALE_MODE_FITASPECT
+} from "./imageWrapper";
 
 // const
 const HOVER_ANIMATION_TIME = 400;
@@ -33,8 +36,7 @@ export default class Gallery {
     this._slideshowNext = ".mibreit-slideshow-next";
     this._slideshowPrevious = ".mibreit-slideshow-previous";
     this._showThumbview = true;
-    this._slideshowHighlighting = false;
-    this._scaleMode = "fitaspect";
+    this._scaleMode = SCALE_MODE_FITASPECT;
 
     this._mibreitScroller = undefined;
     this._mibreitThumbview = undefined;
@@ -96,9 +98,6 @@ export default class Gallery {
         this._fullscreenController = fullscreenController;
       }
     }
-    if (isBoolean(config.slideshowHighlighting)) {
-      this._slideshowHighlighting = config.slideshowHighlighting;
-    }
 
     error_code = this._initSlideshow(config);
 
@@ -124,7 +123,6 @@ export default class Gallery {
 
     return this._mibreitSlideshow.init({
       imageChangedCallback: this._imageChangedCallback,
-      slideshowHighlighting: this._slideshowHighlighting,
       ...config
     });
   }
@@ -164,6 +162,10 @@ export default class Gallery {
 
     if (this._fullscreenEnterButton) {
       $(this._fullscreenEnterButton).bind("click", this._fullscreenEnterClickCallback);
+      // consume other touch events to avoid interference with images behind
+      $(this._fullscreenEnterButton).bind("mouseup mousedown touchstart touchend", (event) => {
+        event.stopPropagation()
+      });
     }
 
     $(document).bind("keydown", this._keyDownCallback);
@@ -266,9 +268,9 @@ export default class Gallery {
 
   _fullscreenChangedCallback = (fullscreen) => {
     if (fullscreen) {
-      this._mibreitSlideshow.reinitSize("fitaspect");
+      this._mibreitSlideshow.reinitSize(SCALE_MODE_FITASPECT);
       $(window).resize(() => {
-        this._mibreitSlideshow.reinitSize("fitaspect");
+        this._mibreitSlideshow.reinitSize(SCALE_MODE_FITASPECT);
       });
       $(this._fullscreenEnterButton).css({
         opacity: 0.0,
@@ -280,9 +282,9 @@ export default class Gallery {
   }
 
   _containerClickedCallback = (relativeX, containerWidth) => {
-    if (relativeX < containerWidth / 3) {
+    if (relativeX < containerWidth / 2) {
       this._mibreitSlideshow.showPreviousImage();
-    } else if (relativeX > containerWidth * 2 / 3) {
+    } else if (relativeX > containerWidth / 2) {
       this._mibreitSlideshow.showNextImage();
     }
   };
