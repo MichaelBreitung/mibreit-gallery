@@ -17,6 +17,14 @@ import {
 import Slideshow from "./components/slideshow";
 import Gallery from "./components/gallery";
 
+export {
+  SCALE_MODE_STRETCH,
+  SCALE_MODE_FITASPECT,
+  SCALE_MODE_NONE,
+  SCALE_MODE_EXPAND
+}
+from "./components/imageWrapper";
+
 export function createSlideshow(config) {
   if (isUndefined(config)) {
     throw Error("createSlideshow Error: No Config was provided");

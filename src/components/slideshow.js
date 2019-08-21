@@ -5,7 +5,9 @@
  */
 import $ from "jquery";
 import Preloader from "./preloader";
-import ImageWrapper from "./imageWrapper";
+import ImageWrapper, {
+  SCALE_MODE_NONE
+} from "./imageWrapper";
 import {
   isString,
   isUndefined,
@@ -17,8 +19,13 @@ import {
   BASE_Z_INDEX
 } from "../tools/globals";
 
+// behavior
 const IMAGE_ANIMATION_TIME = 800;
 const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
+
+// css classes
+const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";
+const HIGHLIGHT_CLASS = ".mibreit-slideshow-highlight";
 
 export default class Slideshow {
   constructor() {
@@ -27,7 +34,6 @@ export default class Slideshow {
     this._slideshowContainer = undefined;
     this._imageContainers = [];
     this._imageWrappers = [];
-    this._imageScaleMode = "none";
     this._interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this._intervalId = -1;
     this._baseZIndex = BASE_Z_INDEX;
@@ -43,11 +49,11 @@ export default class Slideshow {
       this._slideshowContainer = config.slideshowContainer;
 
       this._imageContainers = $(
-        config.slideshowContainer + " .mibreit-imageElement"
+        `${config.slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
       ).has("img");
 
       const images = $(
-        config.slideshowContainer + " .mibreit-imageElement > img"
+        `${config.slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
       );
 
       if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
@@ -92,13 +98,11 @@ export default class Slideshow {
 
   reinitSize(scaleMode) {
     if (isString(this._slideshowContainer) && $(this._slideshowContainer).length) {
-      if (isString(scaleMode)) {
-        this._imageScaleMode = scaleMode;
-      }
+
       const containerWidth = $(this._slideshowContainer).width();
       const containerHeight = $(this._slideshowContainer).height();
 
-      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, this._imageScaleMode);
+      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, scaleMode);
     }
   }
 
@@ -170,14 +174,14 @@ export default class Slideshow {
   }
 
   _prepareHighlighting() {
-    if ($(".mibreit-slideshow-highlight").length === 0) {
+    if ($(HIGHLIGHT_CLASS).length === 0) {
       $("body").append(
-        "<div class='mibreit-slideshow-highlight'/></div>"
+        `<div class="${HIGHLIGHT_CLASS.substr(1)}"/></div>`
       );
     }
 
     $(this._slideshowContainer).bind("mouseenter", function () {
-      $(".mibreit-slideshow-highlight").animate({
+      $(HIGHLIGHT_CLASS).animate({
           opacity: 0.75
         },
         IMAGE_ANIMATION_TIME
@@ -185,7 +189,7 @@ export default class Slideshow {
     });
 
     $(this._slideshowContainer).bind("mouseleave", function () {
-      $(".mibreit-slideshow-highlight").animate({
+      $(HIGHLIGHT_CLASS).animate({
           opacity: 0.0
         },
         IMAGE_ANIMATION_TIME

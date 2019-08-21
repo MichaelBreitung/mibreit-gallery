@@ -8,6 +8,15 @@ import {
   isUndefined
 } from "../tools/typeChecks";
 
+export const SCALE_MODE_STRETCH = "SCALE_MODE_STRETCH";
+export const SCALE_MODE_EXPAND = "SCALE_MODE_EXPAND";
+export const SCALE_MODE_FITASPECT = "SCALE_MODE_FITASPECT";
+export const SCALE_MODE_NONE = "SCALE_MODE_NONE";
+
+const DATA_SRC_ATTRIBUTE = "data-src";
+const DATA_TITLE_ATTRIBUTE = "data-title";
+const TITLE_ATTRIBUTE = "title";
+
 export default class ImageWrapper {
   constructor(image) {
     this._image = image;
@@ -29,14 +38,14 @@ export default class ImageWrapper {
       return false;
     });
 
-    if (this._image.hasAttribute("title")) {
+    if (this._image.hasAttribute(TITLE_ATTRIBUTE)) {
       // we do this to ensure that title will not show up on hover
-      const title = this._image.getAttribute("title");
-      this._image.removeAttribute("title");
-      this._image.setAttribute("data-title", title);
+      const title = this._image.getAttribute(TITLE_ATTRIBUTE);
+      this._image.removeAttribute(TITLE_ATTRIBUTE);
+      this._image.setAttribute(DATA_TITLE_ATTRIBUTE, title);
     }
 
-    this._title = this._image.getAttribute("data-title");
+    this._title = this._image.getAttribute(DATA_TITLE_ATTRIBUTE);
   }
 
   /**   
@@ -54,9 +63,9 @@ export default class ImageWrapper {
 
       this._image.setAttribute(
         "src",
-        this._image.getAttribute("data-src")
+        this._image.getAttribute(DATA_SRC_ATTRIBUTE)
       );
-      this._image.removeAttribute("data-src");
+      this._image.removeAttribute(DATA_SRC_ATTRIBUTE);
       return true;
     } else {
       return false;
@@ -64,7 +73,7 @@ export default class ImageWrapper {
   }
 
   wasLoaded() {
-    return !this._image.hasAttribute("data-src");
+    return !this._image.hasAttribute(DATA_SRC_ATTRIBUTE);
   }
 
   getTitle() {
@@ -73,13 +82,13 @@ export default class ImageWrapper {
 
   applyScaleMode(containerWidth, containerHeight, scaleMode) {
     switch (scaleMode) {
-      case "stretch":
+      case SCALE_MODE_STRETCH:
         $(this._image).css({
           width: "100%",
           height: "100%"
         });
         break;
-      case "expand": {
+      case SCALE_MODE_EXPAND: {
         const aspect = this._originalWidth / this._originalHeight;
         if (containerWidth / containerHeight > aspect) {
           // fit based on width
@@ -96,7 +105,7 @@ export default class ImageWrapper {
         }
       }
       break;
-    case "fitaspect": {
+    case SCALE_MODE_FITASPECT: {
       const aspect = this._originalWidth / this._originalHeight;
       if (containerWidth / containerHeight > aspect) {
         // fit based on height
@@ -128,7 +137,7 @@ export default class ImageWrapper {
 
     }
     break;
-    case "none":
+    case SCALE_MODE_NONE:
     default:
       $(this._image).css({
         width: "auto",
