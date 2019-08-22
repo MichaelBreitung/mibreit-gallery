@@ -12,7 +12,7 @@
 
 .mibreit-slideshow-next {
   position: absolute;
-  z-index: 100;
+  z-index: 12;
   background-image: url("../images/next-image.png");
   background-repeat: no-repeat;
   background-position: center;
@@ -25,7 +25,7 @@
 
 .mibreit-slideshow-previous {
   position: absolute;
-  z-index: 100;
+  z-index: 12;
   background-image: url("../images/previous-image.png");
   background-repeat: no-repeat;
   background-position: center;
@@ -109,7 +109,7 @@
 
 .mibreit-enter-fullscreen-button {
   position: absolute;
-  z-index: 100;
+  z-index: 12;
   background-image: url("../images/fullscreen.png");
   background-size: 40px;
   background-repeat: no-repeat;
@@ -123,7 +123,7 @@
 
 .mibreit-fullscreen>.exit-fullscreen {
   position: absolute;
-  z-index: 100;
+  z-index: 12;
   background-image: url("../images/exit-fullscreen.png");
   background-size: 64px;
   background-repeat: no-repeat;

@@ -25,6 +25,11 @@ import {
 // const
 const HOVER_ANIMATION_TIME = 400;
 
+// css classes
+const ENTER_FULLSCREEN_BUTTON = ".mibreit-enter-fullscreen-button";
+const THUMBS_SCROLLER = ".mibreit-thumbs-scroller";
+const THUMB_ELEMENT = ".mibreit-thumbElement";
+
 export default class Gallery {
   constructor() {
     // default values are used if config does not provide alternative values
@@ -90,8 +95,8 @@ export default class Gallery {
       config.imageScaleMode = this._scaleMode;
     }
     if (isBoolean(config.allowFullscreen)) {
-      $(this._slideshowContainer).append("<div class=\"mibreit-enter-fullscreen-button\"></div>");
-      this._fullscreenEnterButton = $(config.slideshowContainer + " .mibreit-enter-fullscreen-button");
+      $(this._slideshowContainer).append(`<div class="${ENTER_FULLSCREEN_BUTTON.substr(1)}"></div>`);
+      this._fullscreenEnterButton = $(`${config.slideshowContainer} ${ENTER_FULLSCREEN_BUTTON}`);
       const fullscreenController = new FullscreenController();
       if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer,
           config.titleContainer, this._fullscreenChangedCallback)) {
@@ -136,14 +141,14 @@ export default class Gallery {
         thumbviewContainer: this._thumbviewContainer
       })
     ) {
-      $(this._thumbviewContainer + " .mibreit-thumbElement").wrapAll(
-        "<div class='mibreit-thumbs-scroller' />"
+      $(`${this._thumbviewContainer} ${THUMB_ELEMENT}`).wrapAll(
+        `<div class="${THUMBS_SCROLLER.substr(1)}" />`
       );
 
       this._mibreitScroller = new ThumbviewScroller();
       if (
         this._mibreitScroller.init({
-          scroller: this._thumbviewContainer + " .mibreit-thumbs-scroller",
+          scroller: `${this._thumbviewContainer} ${THUMBS_SCROLLER}`,
           thumbviewContainer: this._thumbviewContainer,
         })
       ) {
@@ -205,21 +210,7 @@ export default class Gallery {
       },
       HOVER_ANIMATION_TIME
     );
-    if (this._fullscreenEnterButton) {
-      if (!this._fullscreenController.isFullscreen()) {
-        $(this._fullscreenEnterButton).animate({
-            opacity: 0.4
-          },
-          HOVER_ANIMATION_TIME
-        );
-      } else {
-        $(this._fullscreenEnterButton).animate({
-            opacity: 0.0
-          },
-          HOVER_ANIMATION_TIME
-        );
-      }
-    }
+    this._handleFullscreenEnterButtonOpacity(true);
   }
 
   _mouseLeaveCallback = () => {
@@ -233,13 +224,7 @@ export default class Gallery {
       },
       HOVER_ANIMATION_TIME
     );
-    if (this._fullscreenEnterButton) {
-      $(this._fullscreenEnterButton).animate({
-          opacity: 0.0
-        },
-        HOVER_ANIMATION_TIME
-      );
-    }
+    this._handleFullscreenEnterButtonOpacity(false);
   }
 
   _swipe = (direction, x, y) => {
@@ -278,6 +263,24 @@ export default class Gallery {
     } else {
       this._mibreitSlideshow.reinitSize(this._scaleMode);
       $(window).off("resize");
+    }
+  }
+
+  _handleFullscreenEnterButtonOpacity(show) {
+    if (this._fullscreenEnterButton) {
+      if (show && !this._fullscreenController.isFullscreen()) {
+        $(this._fullscreenEnterButton).animate({
+            opacity: 0.4
+          },
+          HOVER_ANIMATION_TIME
+        );
+      } else {
+        $(this._fullscreenEnterButton).animate({
+            opacity: 0.0
+          },
+          HOVER_ANIMATION_TIME
+        );
+      }
     }
   }
 
