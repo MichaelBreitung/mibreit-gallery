@@ -6,11 +6,11 @@
 import $ from "jquery";
 import Preloader from "./preloader";
 import ImageWrapper, {
+  SCALE_MODES,
   SCALE_MODE_FITASPECT
 } from "./imageWrapper";
 import {
   isString,
-  isUndefined,
   isNumber,
 } from "../tools/typeChecks";
 
@@ -25,60 +25,89 @@ const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 // css classes
 const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";
 
-export default class Slideshow {
-  constructor() {
+/** 
+ * Builder is used to separate the configuration and buildig of the Slideshow
+ * from it's behavior.
+ */
+export default class SlideshowBuilder {
+  constructor(slideshowContainer) {
+    // defaults
+    this.interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
+    this.scaleMode = SCALE_MODE_FITASPECT;
+    this.imageChangedCallback = undefined;
+    this.preloadLeftNr = undefined;
+    this.preloadRightNr = undefined;
+
+    this.slideshowContainer = isString(slideshowContainer) ? slideshowContainer : "";
+  }
+  withImageChangedCallback(imageChangedCallback) {
+    this.imageChangedCallback = imageChangedCallback;
+    return this;
+  }
+  withInterval(interval) {
+    if (isNumber(interval)) {
+      this.interval = interval;
+    }
+    return this;
+  }
+  withScaleMode(scaleMode) {
+    if (SCALE_MODES.includes(scaleMode)) {
+      this.scaleMode = scaleMode;
+    }
+    return this;
+  }
+  withPreloaderLeftSize(number) {
+    if (number > 0) {
+      this.preloadLeftNr = number;
+    }
+    return this;
+  }
+  withPreloaderRightSize(number) {
+    if (number > 0) {
+      this.preloadRightNr = number;
+    }
+    return this;
+  }
+  build() {
+    return new Slideshow(this);
+  }
+}
+
+class Slideshow {
+  constructor(config) {
+    this._config = config;
+
     // default initialization
     this._currentIndex = 0;
-    this._slideshowContainer = undefined;
     this._imageContainers = [];
     this._imageWrappers = [];
-    this._interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this._intervalId = -1;
     this._baseZIndex = BASE_Z_INDEX;
-    this._scaleMode = SCALE_MODE_FITASPECT;
-
-    this._imageChangedCallback = undefined;
     this._preloader = undefined;
   }
 
-  init(config) {
+  init() {
     let error_code = 0;
-    if (isString(config.slideshowContainer) && $(config.slideshowContainer).length) {
-
-      this._slideshowContainer = config.slideshowContainer;
-
+    if ($(this._config.slideshowContainer).length) {
       this._imageContainers = $(
-        `${config.slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
+        `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
       ).has("img");
 
       const images = $(
-        `${config.slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
+        `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
       );
 
       if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
         this._wrapImages(images);
 
-        const _baseZIndex = $(config.slideshowContainer).css("z-index");
-        if (isNumber(_baseZIndex)) {
-          this._baseZIndex = _baseZIndex;
-        }
-
-        if (isNumber(config.interval)) {
-          this._interval = config.interval;
-        }
-
-        if (!isUndefined(config.imageChangedCallback)) {
-          this._imageChangedCallback = config.imageChangedCallback;
-        }
-
         // prepare the containers
         this._prepareContainers();
 
         // finally prepare the images
-        this.reinitSize(config.imageScaleMode);
+        this.reinitSize(this._config.imageScaleMode);
 
         // and start preloading
-        this._preloader = new Preloader(this._imageWrappers, this._currentIndex, config.preloadLeftNr, config.preloadRightNr);
+        this._preloader = new Preloader(this._imageWrappers, this._currentIndex, this._config.preloadLeftNr, this._config.preloadRightNr);
       } else {
         error_code = 202;
       }
@@ -89,20 +118,20 @@ export default class Slideshow {
   }
 
   reinitSize(scaleMode) {
-    if (isString(this._slideshowContainer) && $(this._slideshowContainer).length) {
+    if ($(this._config.slideshowContainer).length) {
       if (isString(scaleMode)) {
-        this._scaleMode = scaleMode;
+        this._config.scaleMode = scaleMode;
       }
-      const containerWidth = $(this._slideshowContainer).width();
-      const containerHeight = $(this._slideshowContainer).height();
+      const containerWidth = $(this._config.slideshowContainer).width();
+      const containerHeight = $(this._config.slideshowContainer).height();
 
-      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, this._scaleMode);
+      this._imageWrappers[this._currentIndex].applyScaleMode(containerWidth, containerHeight, this._config.scaleMode);
     }
   }
 
   start() {
     if (this._interval != 0) {
-      this._intervalId = setInterval(this.showNextImage, this._interval);
+      this._intervalId = setInterval(this.showNextImage, this._config.interval);
     }
   }
 
@@ -199,8 +228,8 @@ export default class Slideshow {
 
     this.reinitSize(this._scaleMode);
 
-    if (this._imageChangedCallback !== undefined) {
-      this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
+    if (this._config.imageChangedCallback !== undefined) {
+      this._config.imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
     }
 
     this._preloader.setCurrentIndex(this._currentIndex);

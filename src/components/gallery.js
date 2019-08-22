@@ -11,7 +11,7 @@ import {
   CLICK
 } from "jquery-swipe-handler";
 import Thumbview from "./thumbview";
-import Slideshow from "./slideshow";
+import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
 import {
@@ -124,12 +124,17 @@ export default class Gallery {
   }
 
   _initSlideshow(config) {
-    this._mibreitSlideshow = new Slideshow();
 
-    return this._mibreitSlideshow.init({
-      imageChangedCallback: this._imageChangedCallback,
-      ...config
-    });
+    const slideshowBuilder = new SlideshowBuilder(config.slideshowContainer)
+      .withInterval(config.interval)
+      .withPreloaderLeftSize(config.preloaderLeftNr)
+      .withPreloaderRightSize(config.preloaderRightNr)
+      .withImageChangedCallback(config.imageChangedCallback)
+      .withScaleMode(config.imageScaleMode);
+
+    this._mibreitSlideshow = slideshowBuilder.build();
+
+    return this._mibreitSlideshow.init();
   }
 
   _initThumbview() {

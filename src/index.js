@@ -14,7 +14,7 @@ import {
   isUndefined
 } from "./tools/typeChecks";
 
-import Slideshow from "./components/slideshow";
+import SlideshowBuilder from "./components/slideshow";
 import Gallery from "./components/gallery";
 
 export {
@@ -30,9 +30,16 @@ export function createSlideshow(config) {
     throw Error("createSlideshow Error: No Config was provided");
   }
 
-  const slideshow = new Slideshow();
+  const slideshowBuilder = new SlideshowBuilder(config.slideshowContainer)
+    .withInterval(config.interval)
+    .withPreloaderLeftSize(config.preloaderLeftNr)
+    .withPreloaderRightSize(config.preloaderRightNr)
+    .withImageChangedCallback(config.imageChangedCallback)
+    .withScaleMode(config.imageScaleMode);
 
-  const error = slideshow.init(config);
+  const slideshow = slideshowBuilder.build();
+
+  const error = slideshow.init();
   if (error) {
     throw Error("createSlideshow Error: invalid config - Error Code: " + error);
   }
