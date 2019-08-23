@@ -76,16 +76,6 @@
   background-position: center;
 }
 
-.mibreit-thumbs {
-  overflow: hidden;
-}
-
-.mibreit-thumbs-scroller {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
-
 /* special styles */
 
 .mibreit-regular {

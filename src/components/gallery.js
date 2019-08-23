@@ -20,9 +20,7 @@ import {
   isBoolean
 } from "../tools/typeChecks";
 import {
-  ENTER_FULLSCREEN_BUTTON,
-  THUMBS_SCROLLER,
-  THUMB_ELEMENT
+  ENTER_FULLSCREEN_BUTTON
 } from "../tools/globals";
 
 // const
@@ -38,7 +36,7 @@ export default class GalleryBuilder extends SlideshowBuilder {
     super(slideshowContainer);
     // defaults
 
-    this.thumbviewContainer = ".mibreit-thumbs";
+    this.thumbviewContainer = ".mibreit-thumbview";
     this.thumbviewNext = ".mibreit-thumbview-next";
     this.thumbviewPrevious = ".mibreit-thumbview-previous";
     this.slideshowNext = ".mibreit-slideshow-next";
@@ -96,7 +94,7 @@ export default class GalleryBuilder extends SlideshowBuilder {
 
 class Gallery {
   constructor(builder) {
-    this._mibreitSlideshow = builder.buildSlideshow();
+    this._mibreitSlideshow = builder.withImageChangedCallback(this._imageChangedCallback).buildSlideshow();
     this._slideshowContainer = builder.slideshowContainer;
     this._slideshowPrevious = builder.slideshowPrevious;
     this._slideshowNext = builder.slideshowNext;
@@ -108,7 +106,6 @@ class Gallery {
 
     // not provided by builder    
     this._mibreitScroller = undefined;
-    this._mibreitThumbview = undefined;
     this._fullscreenController = undefined;
     this._fullscreenEnterButton = undefined;
   }
@@ -150,25 +147,9 @@ class Gallery {
   }
 
   _initThumbview() {
-    this._mibreitThumbview = new Thumbview();
-
-    if (
-      this._mibreitThumbview.init({
-        thumbClickCallback: this._thumbClickCallback,
-        thumbviewContainer: this._thumbviewContainer
-      })
-    ) {
-      $(`${this._thumbviewContainer} ${THUMB_ELEMENT}`).wrapAll(
-        `<div class="${THUMBS_SCROLLER.substr(1)}" />`
-      );
-
+    if (new Thumbview().init(this._thumbviewContainer, this._thumbClickCallback)) {
       this._mibreitScroller = new ThumbviewScroller();
-      if (
-        this._mibreitScroller.init({
-          scroller: `${this._thumbviewContainer} ${THUMBS_SCROLLER}`,
-          thumbviewContainer: this._thumbviewContainer,
-        })
-      ) {
+      if (this._mibreitScroller.init(this._thumbviewContainer)) {
         $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
         $(this._thumbviewNext).bind("click", this._scrollRightCallback);
       }

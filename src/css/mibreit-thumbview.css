@@ -1,3 +1,16 @@
+.mibreit-thumbs {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.mibreit-thumbs-scroller {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+
 .mibreit-thumbElement {
     position: relative;
     padding: 0px;

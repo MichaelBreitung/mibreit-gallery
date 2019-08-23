@@ -15,15 +15,15 @@ import {
 } from "../tools/globals";
 
 export default class Thumbview {
-  init(config) {
+  init(thumbviewContainer, thumbClickCallback) {
     let success = false;
 
-    if (isString(config.thumbviewContainer) && $(config.thumbviewContainer).length) {
+    if (isString(thumbviewContainer) && $(thumbviewContainer).length) {
       const thumbContainers = $(
-        config.thumbviewContainer + " .mibreit-thumbElement"
+        thumbviewContainer + " .mibreit-thumbElement"
       );
       const images = $(
-        config.thumbviewContainer + " .mibreit-thumbElement > img"
+        thumbviewContainer + " .mibreit-thumbElement > img"
       );
 
       if (thumbContainers.length > 0 && thumbContainers.length === images.length) {
@@ -31,14 +31,14 @@ export default class Thumbview {
         const thumbWidth = thumbContainers.innerWidth();
         const thumbHeight = thumbContainers.innerHeight();
 
-        let _baseZIndex = $(config.thumbviewContainer).css("z-index");
+        let _baseZIndex = $(thumbviewContainer).css("z-index");
         if (!isNumber(_baseZIndex)) {
           _baseZIndex = BASE_Z_INDEX;
         }
-        this._elevateThumbContainers(config.thumbviewContainer, _baseZIndex);
+        this._elevateThumbContainers(thumbviewContainer, _baseZIndex);
 
-        if (!isUndefined(config.thumbClickCallback)) {
-          this._setupClickEvents(thumbContainers, config.thumbClickCallback);
+        if (!isUndefined(thumbClickCallback)) {
+          this._setupClickEvents(thumbContainers, thumbClickCallback);
         }
 
         this._prepareThumbview(images, thumbWidth, thumbHeight);

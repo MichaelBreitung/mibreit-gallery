@@ -6,8 +6,12 @@
 import $ from "jquery";
 import {
   isString,
-  isUndefined
 } from "../tools/typeChecks";
+import {
+  THUMBS,
+  THUMBS_SCROLLER,
+  THUMB_ELEMENT
+} from "../tools/globals";
 
 export default class ThumbviewScroller {
   constructor() {
@@ -19,28 +23,41 @@ export default class ThumbviewScroller {
     this._stepSize = false;
   }
 
-  init(config) {
+  init(thumbviewContainer) {
     let success = false;
 
-    if (isString(config.thumbviewContainer) && $(config.thumbviewContainer).length &&
-      isString(config.scroller) && $(config.scroller).length) {
-      let thumbContainers = $(config.thumbviewContainer + " .mibreit-thumbElement");
+
+    if (isString(thumbviewContainer) && $(thumbviewContainer).length) {
+      const thumbContainers = $(`${thumbviewContainer} ${THUMB_ELEMENT}`);
       if (thumbContainers.length > 0) {
-        this.scroller = $(config.scroller);
+        thumbContainers.wrapAll(
+          `<div class="${THUMBS_SCROLLER.substr(1)}" />`
+        );
+        $(THUMBS_SCROLLER).wrap(
+          `<div class="${THUMBS.substr(1)}" />`
+        );
+
+        if ($(THUMBS).css("display") === "flex") {
+          $(THUMBS).css({
+            display: "block"
+          });
+        }
+
+        this._scroller = $(`${thumbviewContainer} ${THUMBS_SCROLLER}`);
 
         this._stepSize = thumbContainers.outerWidth(true);
         this._nrOfImages = thumbContainers.length;
-        this._nrVisibleImages = Math.floor(this.scroller.width() / this._stepSize);
+        this._nrVisibleImages = Math.floor(this._scroller.width() / this._stepSize);
 
         // ensure that scroller width is an even multiple of _stepsize
-        this.scroller.css({
+        this._scroller.css({
           width: this._nrVisibleImages * this._stepSize
         });
 
         if (this._nrOfImages <= this._nrVisibleImages) {
           this._allowMovement = false;
-          this.scroller.css({
-            left: (this.scroller.width() - this._stepSize * this._nrOfImages) / 2
+          this._scroller.css({
+            left: (this._scroller.width() - this._stepSize * this._nrOfImages) / 2
           });
         } else {
           this._allowMovement = true;
@@ -105,8 +122,8 @@ export default class ThumbviewScroller {
   }
 
   _moveScroller() {
-    if (this.scroller !== false) {
-      this.scroller.animate({
+    if (this._scroller !== false) {
+      this._scroller.animate({
           left: -this._startPositionId * this._stepSize
         },
         800
