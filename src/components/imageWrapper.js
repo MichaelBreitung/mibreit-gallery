@@ -7,16 +7,7 @@
 import {
   isUndefined
 } from "../tools/typeChecks";
-
-export const SCALE_MODE_STRETCH = "SCALE_MODE_STRETCH";
-export const SCALE_MODE_EXPAND = "SCALE_MODE_EXPAND";
-export const SCALE_MODE_FITASPECT = "SCALE_MODE_FITASPECT";
-export const SCALE_MODE_NONE = "SCALE_MODE_NONE";
-export const SCALE_MODES = [SCALE_MODE_STRETCH, SCALE_MODE_EXPAND, SCALE_MODE_FITASPECT, SCALE_MODE_NONE];
-
-const DATA_SRC_ATTRIBUTE = "data-src";
-const DATA_TITLE_ATTRIBUTE = "data-title";
-const TITLE_ATTRIBUTE = "title";
+import * as globals from "../tools/globals";
 
 export default class ImageWrapper {
   constructor(image) {
@@ -39,14 +30,14 @@ export default class ImageWrapper {
       return false;
     });
 
-    if (this._image.hasAttribute(TITLE_ATTRIBUTE)) {
+    if (this._image.hasAttribute(globals.TITLE_ATTRIBUTE)) {
       // we do this to ensure that title will not show up on hover
-      const title = this._image.getAttribute(TITLE_ATTRIBUTE);
-      this._image.removeAttribute(TITLE_ATTRIBUTE);
-      this._image.setAttribute(DATA_TITLE_ATTRIBUTE, title);
+      const title = this._image.getAttribute(globals.TITLE_ATTRIBUTE);
+      this._image.removeAttribute(globals.TITLE_ATTRIBUTE);
+      this._image.setAttribute(globals.DATA_TITLE_ATTRIBUTE, title);
     }
 
-    this._title = this._image.getAttribute(DATA_TITLE_ATTRIBUTE);
+    this._title = this._image.getAttribute(globals.DATA_TITLE_ATTRIBUTE);
   }
 
   /**   
@@ -64,9 +55,9 @@ export default class ImageWrapper {
 
       this._image.setAttribute(
         "src",
-        this._image.getAttribute(DATA_SRC_ATTRIBUTE)
+        this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE)
       );
-      this._image.removeAttribute(DATA_SRC_ATTRIBUTE);
+      this._image.removeAttribute(globals.DATA_SRC_ATTRIBUTE);
       return true;
     } else {
       return false;
@@ -74,7 +65,7 @@ export default class ImageWrapper {
   }
 
   wasLoaded() {
-    return !this._image.hasAttribute(DATA_SRC_ATTRIBUTE);
+    return !this._image.hasAttribute(globals.DATA_SRC_ATTRIBUTE);
   }
 
   getTitle() {
@@ -83,13 +74,13 @@ export default class ImageWrapper {
 
   applyScaleMode(containerWidth, containerHeight, scaleMode) {
     switch (scaleMode) {
-      case SCALE_MODE_STRETCH:
+      case globals.SCALE_MODE_STRETCH:
         $(this._image).css({
           width: "100%",
           height: "100%"
         });
         break;
-      case SCALE_MODE_EXPAND: {
+      case globals.SCALE_MODE_EXPAND: {
         const aspect = this._originalWidth / this._originalHeight;
         if (containerWidth / containerHeight > aspect) {
           // fit based on width
@@ -106,7 +97,7 @@ export default class ImageWrapper {
         }
       }
       break;
-    case SCALE_MODE_FITASPECT: {
+    case globals.SCALE_MODE_FITASPECT: {
       const aspect = this._originalWidth / this._originalHeight;
       if (containerWidth / containerHeight > aspect) {
         // fit based on height        
@@ -138,7 +129,7 @@ export default class ImageWrapper {
 
     }
     break;
-    case SCALE_MODE_NONE:
+    case globals.SCALE_MODE_NONE:
     default:
       $(this._image).css({
         width: "auto",

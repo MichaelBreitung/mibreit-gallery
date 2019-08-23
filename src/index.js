@@ -22,7 +22,7 @@ export {
   SCALE_MODE_NONE,
   SCALE_MODE_EXPAND
 }
-from "./components/imageWrapper";
+from "./tools/globals";
 
 export function createSlideshow(config) {
   if (isUndefined(config)) {
@@ -38,7 +38,7 @@ export function createSlideshow(config) {
 
   const slideshow = slideshowBuilder.buildSlideshow();
 
-  if (!slideshow.init()) {
+  if (!slideshow.isInitialized()) {
     throw Error("createSlideshow Error: invalid html structure");
   }
 
@@ -60,7 +60,6 @@ export function createGallery(config) {
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
     .withThumbviewContainer(config.thumbviewContainer)
-    .withShowThumbview(config.showThumbView)
     .withSlideshowNextButton(config.slideshowNext)
     .withSlideshowPreviousButton(config.slideshowPrevious)
     .withThumbviewNextButton(config.thumbviewNext)
@@ -69,7 +68,9 @@ export function createGallery(config) {
 
   const gallery = galleryBuilder.buildGallery();
 
-  gallery.init();
+  if (!gallery.init()) {
+    throw Error("createGallery Error: invalid html structure");
+  }
 
   return gallery;
 }

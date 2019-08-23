@@ -50,7 +50,7 @@ export default class FullscreenController {
         width: this._oldWidth,
         height: this._oldHeight
       });
-      if (this._thumbviewContainer) {
+      if ($(this._thumbviewContainer).length) {
         $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
       }
       if (this._titleContainer) {
@@ -75,7 +75,7 @@ export default class FullscreenController {
         width: "100%",
         "flex-grow": 1
       });
-      if (this._thumbviewContainer) {
+      if ($(this._thumbviewContainer).length) {
         $(this._thumbviewContainer).appendTo(FULLSCREEN_CLASS);
         $(this._thumbviewContainer).css({
           "flex-grow": 0
@@ -99,7 +99,7 @@ export default class FullscreenController {
   /** attach regular wrapper, which is used as placeholder for gallery until we deactivate fullscreen again */
   createRegularWrapper() {
     $(this._slideshowContainer).wrap(`<div class="${REGULAR_CLASS.substr(1)}"></div>`);
-    if (this._thumbviewContainer) {
+    if ($(this._thumbviewContainer).length) {
       $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
     }
     if (this._titleContainer) {
