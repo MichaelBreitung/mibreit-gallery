@@ -1,8 +1,9 @@
 /**
- * @class Slideshow
+ * @class Gallery
  * @author Michael Breitung
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
+
 import $ from "jquery";
 import {
   handleSwipe,
@@ -21,120 +22,144 @@ import {
 import {
   SCALE_MODE_FITASPECT
 } from "./imageWrapper";
+import {
+  ENTER_FULLSCREEN_BUTTON,
+  THUMBS_SCROLLER,
+  THUMB_ELEMENT
+} from "../tools/globals";
 
 // const
 const HOVER_ANIMATION_TIME = 400;
 
-// css classes
-const ENTER_FULLSCREEN_BUTTON = ".mibreit-enter-fullscreen-button";
-const THUMBS_SCROLLER = ".mibreit-thumbs-scroller";
-const THUMB_ELEMENT = ".mibreit-thumbElement";
+/** 
+ * Builder is used to separate the configuration and building of the Gallery
+ * from it's behavior.
+ */
+export default class GalleryBuilder extends SlideshowBuilder {
+  constructor(slideshowContainer) {
 
-export default class Gallery {
-  constructor() {
+    super(slideshowContainer);
+    // defaults
+    this.showThumbview = true;
+    this.thumbviewContainer = ".mibreit-thumbs";
+    this.thumbviewNext = ".mibreit-thumbview-next";
+    this.thumbviewPrevious = ".mibreit-thumbview-previous";
+    this.slideshowNext = ".mibreit-slideshow-next";
+    this.slideshowPrevious = ".mibreit-slideshow-previous";
+    this.allowFullscreen = true;
+  }
+  withSlideshowNextButton(button) {
+    if (isString(button)) {
+      this.slideshowNext = button;
+    }
+    return this;
+  }
+  withSlideshowPreviousButton(button) {
+    if (isString(button)) {
+      this.slideshowPrevious = button;
+    }
+    return this;
+  }
+  withShowThumbview(show) {
+    if (isBoolean(show)) {
+      this.showThumbview = show;
+    }
+    return this;
+  }
+  withThumbviewContainer(container) {
+    if (isString(container)) {
+      this.thumbviewContainer = container;
+    }
+    return this;
+  }
+  withThumbviewNextButton(button) {
+    if (isString(button)) {
+      this.thumbviewNext = button;
+    }
+    return this;
+  }
+  withThumbviewPreviousButton(button) {
+    if (isString(button)) {
+      this.thumbviewPrevious = button;
+    }
+    return this;
+  }
+  withTitleContainer(container) {
+    if (isString(container)) {
+      this.titleContainer = container;
+    }
+    return this;
+  }
+  withFullscreen(allow) {
+    if (isBoolean(allow)) {
+      this.allowFullscreen = allow;
+    }
+    return this;
+  }
+
+  buildGallery() {
+    let validationResult = super._validate();
+    if (this._validate() !== undefined) {
+      throw Error("buildSlideshow Error: invalid config", validationResult);
+    }
+
+    validationResult = this._validate();
+
+    return new Gallery(this);
+  }
+
+  // private
+  _validate() {
+
+    return undefined;
+  }
+}
+
+class Gallery {
+  constructor(config) {
+    this._config = config;
+
+    this._mibreitSlideshow = this._config.buildSlideshow();
+
     // default values are used if config does not provide alternative values
-    this._slideshowContainer = ".mibreit-slideshow";
-    this._thumbviewContainer = ".mibreit-thumbs";
-    this._titleContainer = "";
-    this._thumbviewNext = ".mibreit-thumbview-next";
-    this._thumbviewPrevious = ".mibreit-thumbview-previous";
-    this._slideshowNext = ".mibreit-slideshow-next";
-    this._slideshowPrevious = ".mibreit-slideshow-previous";
-    this._showThumbview = true;
+
     this._scaleMode = SCALE_MODE_FITASPECT;
 
     this._mibreitScroller = undefined;
     this._mibreitThumbview = undefined;
-    this._mibreitSlideshow = undefined;
     this._fullscreenController = undefined;
     this._fullscreenEnterButton = undefined;
   }
 
-  init(config) {
-    let error_code = 0;
+  init() {
+    if (this._mibreitSlideshow.init()) {
+      // fullscreen
+      if (this._config.allowFullscreen) {
 
-    if (isString(config.slideshowContainer)) {
-      this._slideshowContainer = config.slideshowContainer;
-    } else {
-      config.slideshowContainer = this._slideshowContainer;
-    }
-    if (isString(config.thumbviewContainer)) {
-      this._thumbviewContainer = config.thumbviewContainer;
-    } else {
-      config.thumbviewContainer = this._thumbviewContainer;
-    }
-    if (isBoolean(config.showThumbView)) {
-      this._showThumbview = config.showThumbView;
-    }
-    if (isString(config.thumbviewNext)) {
-      this._thumbviewNext = config.thumbviewNext;
-    } else {
-      config.thumbviewNext = this._thumbviewNext;
-    }
-    if (isString(config.thumbviewPrevious)) {
-      this._thumbviewPrevious = config.thumbviewPrevious;
-    } else {
-      config.thumbviewPrevious = this._thumbviewPrevious;
-    }
-    if (isString(config.slideshowNext)) {
-      this._slideshowNext = config.slideshowNext;
-    } else {
-      config.slideshowNext = this._slideshowNext;
-    }
-    if (isString(config.slideshowPrevious)) {
-      this._slideshowPrevious = config.slideshowPrevious;
-    } else {
-      config.slideshowPrevious = this._slideshowPrevious;
-    }
-    if (isString(config.titleContainer)) {
-      this._titleContainer = config.titleContainer;
-    }
-    if (isString(config.imageScaleMode)) {
-      this._scaleMode = config.imageScaleMode;
-    } else {
-      config.imageScaleMode = this._scaleMode;
-    }
-    if (isBoolean(config.allowFullscreen)) {
-      $(this._slideshowContainer).append(`<div class="${ENTER_FULLSCREEN_BUTTON.substr(1)}"></div>`);
-      this._fullscreenEnterButton = $(`${config.slideshowContainer} ${ENTER_FULLSCREEN_BUTTON}`);
-      const fullscreenController = new FullscreenController();
-      if (fullscreenController.init(config.slideshowContainer, config.thumbviewContainer,
-          config.titleContainer, this._fullscreenChangedCallback)) {
-        this._fullscreenController = fullscreenController;
+        $(this._config.slideshowContainer).append(`<div class="${ENTER_FULLSCREEN_BUTTON.substr(1)}"></div>`);
+
+        this._fullscreenEnterButton = $(`${this._config.slideshowContainer} ${ENTER_FULLSCREEN_BUTTON}`);
+        const fullscreenController = new FullscreenController();
+        if (fullscreenController.init(this._config.slideshowContainer, this._config.thumbviewContainer,
+            this._config.titleContainer, this._fullscreenChangedCallback)) {
+          this._fullscreenController = fullscreenController;
+        }
       }
-    }
 
-    error_code = this._initSlideshow(config);
-
-    if (error_code === 0) {
-
-      if (this._showThumbview) {
+      // thumbview
+      if (this._config.showThumbview) {
         this._initThumbview();
       }
 
+      // input
       this._initKeyAndMouseEvents();
 
-      // initial update of title
+      // title
       if (this._titleContainer !== undefined) {
         this._updateTitle(this._mibreitSlideshow.getCurrentImageTitle());
       }
     }
 
-    return error_code;
-  }
-
-  _initSlideshow(config) {
-
-    const slideshowBuilder = new SlideshowBuilder(config.slideshowContainer)
-      .withInterval(config.interval)
-      .withPreloaderLeftSize(config.preloaderLeftNr)
-      .withPreloaderRightSize(config.preloaderRightNr)
-      .withImageChangedCallback(config.imageChangedCallback)
-      .withScaleMode(config.imageScaleMode);
-
-    this._mibreitSlideshow = slideshowBuilder.build();
-
-    return this._mibreitSlideshow.init();
   }
 
   _initThumbview() {
@@ -143,32 +168,32 @@ export default class Gallery {
     if (
       this._mibreitThumbview.init({
         thumbClickCallback: this._thumbClickCallback,
-        thumbviewContainer: this._thumbviewContainer
+        thumbviewContainer: this._config.thumbviewContainer
       })
     ) {
-      $(`${this._thumbviewContainer} ${THUMB_ELEMENT}`).wrapAll(
+      $(`${this._config.thumbviewContainer} ${THUMB_ELEMENT}`).wrapAll(
         `<div class="${THUMBS_SCROLLER.substr(1)}" />`
       );
 
       this._mibreitScroller = new ThumbviewScroller();
       if (
         this._mibreitScroller.init({
-          scroller: `${this._thumbviewContainer} ${THUMBS_SCROLLER}`,
-          thumbviewContainer: this._thumbviewContainer,
+          scroller: `${this._config.thumbviewContainer} ${THUMBS_SCROLLER}`,
+          thumbviewContainer: this._config.thumbviewContainer,
         })
       ) {
-        $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
-        $(this._thumbviewNext).bind("click", this._scrollRightCallback);
+        $(this._config.thumbviewPrevious).bind("click", this._scrollLeftCallback);
+        $(this._config.thumbviewNext).bind("click", this._scrollRightCallback);
       }
     }
   }
 
   _initKeyAndMouseEvents() {
-    $(this._slideshowContainer).bind("mouseenter", this._mouseEnterCallback);
+    $(this._config.slideshowContainer).bind("mouseenter", this._mouseEnterCallback);
 
-    $(this._slideshowContainer).bind("mouseleave", this._mouseLeaveCallback);
+    $(this._config.slideshowContainer).bind("mouseleave", this._mouseLeaveCallback);
 
-    handleSwipe(this._slideshowContainer, [SWIPE_LEFT, SWIPE_RIGHT, CLICK], this._swipe);
+    handleSwipe(this._config.slideshowContainer, [SWIPE_LEFT, SWIPE_RIGHT, CLICK], this._swipe);
 
     if (this._fullscreenEnterButton) {
       $(this._fullscreenEnterButton).bind("click", this._fullscreenEnterClickCallback);
@@ -205,12 +230,12 @@ export default class Gallery {
   }
 
   _mouseEnterCallback = () => {
-    $(this._slideshowNext).animate({
+    $(this._config.slideshowNext).animate({
         opacity: 0.4
       },
       HOVER_ANIMATION_TIME
     );
-    $(this._slideshowPrevious).animate({
+    $(this._config.slideshowPrevious).animate({
         opacity: 0.4
       },
       HOVER_ANIMATION_TIME
@@ -219,12 +244,12 @@ export default class Gallery {
   }
 
   _mouseLeaveCallback = () => {
-    $(this._slideshowNext).animate({
+    $(this._config.slideshowNext).animate({
         opacity: 0.0
       },
       HOVER_ANIMATION_TIME
     );
-    $(this._slideshowPrevious).animate({
+    $(this._config.slideshowPrevious).animate({
         opacity: 0.0
       },
       HOVER_ANIMATION_TIME
@@ -241,7 +266,7 @@ export default class Gallery {
         this._mibreitSlideshow.showPreviousImage();
         break;
       case CLICK:
-        this._containerClickedCallback(x, $(this._slideshowContainer).width());
+        this._containerClickedCallback(x, $(this._config.slideshowContainer).width());
         break;
       default:
     }

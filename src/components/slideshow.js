@@ -15,18 +15,17 @@ import {
 } from "../tools/typeChecks";
 
 import {
-  BASE_Z_INDEX
+  BASE_Z_INDEX,
+  IMAGE_ELEMENT_CLASS
 } from "../tools/globals";
 
 // behavior
 const IMAGE_ANIMATION_TIME = 800;
 const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 
-// css classes
-const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";
 
 /** 
- * Builder is used to separate the configuration and buildig of the Slideshow
+ * Builder is used to separate the configuration and building of the Slideshow
  * from it's behavior.
  */
 export default class SlideshowBuilder {
@@ -68,8 +67,20 @@ export default class SlideshowBuilder {
     }
     return this;
   }
-  build() {
+  buildSlideshow() {
+    const validationResult = this._validate();
+    if (this._validate() !== undefined) {
+      throw Error("buildSlideshow Error: invalid config", validationResult);
+    }
     return new Slideshow(this);
+  }
+
+  // private
+  _validate() {
+    if ($(this.slideshowContainer).length === 0) {
+      return "invalid slideshowContainer";
+    }
+    return undefined;
   }
 }
 
@@ -87,34 +98,30 @@ class Slideshow {
   }
 
   init() {
-    let error_code = 0;
-    if ($(this._config.slideshowContainer).length) {
-      this._imageContainers = $(
-        `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
-      ).has("img");
+    this._imageContainers = $(
+      `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
+    ).has("img");
 
-      const images = $(
-        `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
-      );
+    const images = $(
+      `${this._config.slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
+    );
 
-      if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
-        this._wrapImages(images);
+    if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
+      this._wrapImages(images);
 
-        // prepare the containers
-        this._prepareContainers();
+      // prepare the containers
+      this._prepareContainers();
 
-        // finally prepare the images
-        this.reinitSize(this._config.imageScaleMode);
+      // finally prepare the images
+      this.reinitSize(this._config.imageScaleMode);
 
-        // and start preloading
-        this._preloader = new Preloader(this._imageWrappers, this._currentIndex, this._config.preloadLeftNr, this._config.preloadRightNr);
-      } else {
-        error_code = 202;
-      }
+      // and start preloading
+      this._preloader = new Preloader(this._imageWrappers, this._currentIndex, this._config.preloadLeftNr, this._config.preloadRightNr);
+
+      return true;
     } else {
-      error_code = 201;
+      return false;
     }
-    return error_code;
   }
 
   reinitSize(scaleMode) {

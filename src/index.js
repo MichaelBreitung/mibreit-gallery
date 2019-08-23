@@ -14,8 +14,7 @@ import {
   isUndefined
 } from "./tools/typeChecks";
 
-import SlideshowBuilder from "./components/slideshow";
-import Gallery from "./components/gallery";
+import GalleryBuilder from "./components/gallery";
 
 export {
   SCALE_MODE_STRETCH,
@@ -30,18 +29,17 @@ export function createSlideshow(config) {
     throw Error("createSlideshow Error: No Config was provided");
   }
 
-  const slideshowBuilder = new SlideshowBuilder(config.slideshowContainer)
+  const slideshowBuilder = new GalleryBuilder(config.slideshowContainer)
     .withInterval(config.interval)
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
     .withImageChangedCallback(config.imageChangedCallback)
     .withScaleMode(config.imageScaleMode);
 
-  const slideshow = slideshowBuilder.build();
+  const slideshow = slideshowBuilder.buildSlideshow();
 
-  const error = slideshow.init();
-  if (error) {
-    throw Error("createSlideshow Error: invalid config - Error Code: " + error);
+  if (!slideshow.init()) {
+    throw Error("createSlideshow Error: invalid html structure");
   }
 
   return slideshow;
@@ -52,12 +50,26 @@ export function createGallery(config) {
     throw Error("createGallery Error: No Config was provided");
   }
 
-  const gallery = new Gallery();
+  const galleryBuilder = new GalleryBuilder(config.slideshowContainer)
+    .withInterval(config.interval)
+    .withPreloaderLeftSize(config.preloaderLeftNr)
+    .withPreloaderRightSize(config.preloaderRightNr)
+    .withImageChangedCallback(config.imageChangedCallback)
+    .withScaleMode(config.imageScaleMode)
+    .withFullscreen(config.allowFullscreen)
+    .withPreloaderLeftSize(config.preloaderLeftNr)
+    .withPreloaderRightSize(config.preloaderRightNr)
+    .withThumbviewContainer(config.thumbviewContainer)
+    .withShowThumbview(config.showThumbView)
+    .withSlideshowNextButton(config.slideshowNext)
+    .withSlideshowPreviousButton(config.slideshowPrevious)
+    .withThumbviewNextButton(config.thumbviewNext)
+    .withThumbviewPreviousButton(config.thumbviewPrevious)
+    .withTitleContainer(config.titleContainer);
 
-  const error = gallery.init(config);
-  if (error) {
-    throw Error("createGallery Error: invalid config - Error Code: " + error);
-  }
+  const gallery = galleryBuilder.buildGallery();
+
+  gallery.init();
 
   return gallery;
 }

@@ -7,10 +7,10 @@
 import {
   isString
 } from "../tools/typeChecks";
-
-// css classes
-const REGULAR_CLASS = ".mibreit-regular";
-const FULLSCREEN_CLASS = ".mibreit-fullscreen";
+import {
+  REGULAR_CLASS,
+  FULLSCREEN_CLASS
+} from "../tools/globals";
 
 export default class FullscreenController {
   constructor() {
