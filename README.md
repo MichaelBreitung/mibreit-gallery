@@ -27,7 +27,7 @@ The gallery exports two functions:
 1. createSlideshow -> if you don't want any interaction and just a continuous, lightweight slideshow use this function. You pass in a config object with the following values:
 
 - slideshowContainer -> mandatory - CSS id or class of the container div, which contains the images
-- scaleMode -> optional - defines how the images will be scaled to fit the _slideshowContainer_ -> possible values are SCALE_MODE_STRETCH, SCALE_MODE_FITASPECT (defualt), SCALE_MODE_NONE, SCALE_MODE_EXPAND and also part of the exportet interface
+- scaleMode -> optional - defines how the images will be scaled to fit the _slideshowContainer_ -> possible values are SCALE_MODE_STRETCH, SCALE_MODE_FITASPECT (defualt), SCALE_MODE_NONE, SCALE_MODE_EXPAND. They are also part of the exported interface
 - interval -> optional - defines in milliseconds how long an image is shown before moving to the next image (default is 3000ms)
 - preloadLeftNr -> optional - defines how many images are preloaded before the current image (lazy loading applied; default is 3)
 - preloadRightNr -> optional - defines how many images are preloaded after the current image (lazy loading applied; default is 7)

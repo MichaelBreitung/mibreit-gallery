@@ -55,8 +55,6 @@ export function createGallery(config) {
     .withPreloaderRightSize(config.preloaderRightNr)
     .withScaleMode(config.imageScaleMode)
     .withFullscreen(config.allowFullscreen)
-    .withPreloaderLeftSize(config.preloaderLeftNr)
-    .withPreloaderRightSize(config.preloaderRightNr)
     .withThumbviewContainer(config.thumbviewContainer)
     .withTitleContainer(config.titleContainer);
 
