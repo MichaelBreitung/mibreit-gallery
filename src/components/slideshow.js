@@ -7,11 +7,10 @@ import $ from "jquery";
 import Preloader from "./preloader";
 import ImageWrapper from "./imageWrapper";
 import {
-  isString,
   isNumber,
   isUndefined
 } from "../tools/typeChecks";
-
+import isElementPresent from "../tools/isElementPresent";
 import {
   BASE_Z_INDEX,
   IMAGE_ELEMENT_CLASS,
@@ -34,8 +33,7 @@ export default class SlideshowBuilder {
     this.scaleMode = SCALE_MODE_FITASPECT;
     this.preloadLeftNr = undefined;
     this.preloadRightNr = undefined;
-
-    this.slideshowContainer = isString(slideshowContainer) ? slideshowContainer : "";
+    this.slideshowContainer = slideshowContainer;
   }
   withInterval(interval) {
     if (isNumber(interval)) {
@@ -71,7 +69,7 @@ export default class SlideshowBuilder {
 
   // private
   _validate() {
-    if ($(this.slideshowContainer).length === 0) {
+    if (!isElementPresent(this.slideshowContainer)) {
       return "invalid slideshowContainer";
     }
     return undefined;

@@ -11,6 +11,7 @@ import {
   REGULAR_CLASS,
   FULLSCREEN_CLASS
 } from "../tools/globals";
+import isElementPresent from "../tools/isElementPresent";
 
 export default class FullscreenController {
   constructor() {
@@ -26,7 +27,7 @@ export default class FullscreenController {
     titleContainer,
     fullScreenChangedCallback
   ) {
-    if (isString(slideshowContainer) && $(slideshowContainer).length) {
+    if (isElementPresent(slideshowContainer)) {
       this._slideshowContainer = slideshowContainer;
 
       // following are optional, so we don't check their presence
@@ -50,10 +51,10 @@ export default class FullscreenController {
         width: this._oldWidth,
         height: this._oldHeight
       });
-      if ($(this._thumbviewContainer).length) {
+      if (isElementPresent(this._thumbviewContainer)) {
         $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
       }
-      if (this._titleContainer) {
+      if (isElementPresent(this._titleContainer)) {
         $(this._titleContainer).appendTo(REGULAR_CLASS);
       }
       $(FULLSCREEN_CLASS).remove();
@@ -75,13 +76,13 @@ export default class FullscreenController {
         width: "100%",
         "flex-grow": 1
       });
-      if ($(this._thumbviewContainer).length) {
+      if (isElementPresent(this._thumbviewContainer)) {
         $(this._thumbviewContainer).appendTo(FULLSCREEN_CLASS);
         $(this._thumbviewContainer).css({
           "flex-grow": 0
         });
       }
-      if (this._titleContainer) {
+      if (isElementPresent(this._titleContainer)) {
         $(this._titleContainer).appendTo(FULLSCREEN_CLASS);
         $(this._titleContainer).css({
           "flex-grow": 0
@@ -99,10 +100,10 @@ export default class FullscreenController {
   /** attach regular wrapper, which is used as placeholder for gallery until we deactivate fullscreen again */
   createRegularWrapper() {
     $(this._slideshowContainer).wrap(`<div class="${REGULAR_CLASS.substr(1)}"></div>`);
-    if ($(this._thumbviewContainer).length) {
+    if (isElementPresent(this._thumbviewContainer)) {
       $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
     }
-    if (this._titleContainer) {
+    if (isElementPresent(this._titleContainer)) {
       $(this._titleContainer).appendTo(REGULAR_CLASS);
     }
   }

@@ -4,9 +4,7 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 import $ from "jquery";
-import {
-  isString,
-} from "../tools/typeChecks";
+import isElementPresent from "../tools/isElementPresent";
 import {
   THUMBS,
   THUMBS_SCROLLER,
@@ -26,8 +24,7 @@ export default class ThumbviewScroller {
   init(thumbviewContainer) {
     let success = false;
 
-
-    if (isString(thumbviewContainer) && $(thumbviewContainer).length) {
+    if (isElementPresent(thumbviewContainer)) {
       const thumbContainers = $(`${thumbviewContainer} ${THUMB_ELEMENT}`);
       if (thumbContainers.length > 0) {
         thumbContainers.wrapAll(

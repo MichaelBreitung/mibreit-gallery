@@ -72,12 +72,12 @@ export default class GalleryBuilder extends SlideshowBuilder {
 
   // private helper
   _validate() {
-    if (this._thumviewContainer !== undefined) {
+    if (isString(this._thumviewContainer)) {
       if (!$(this._thumbviewContainer).length) {
         return "invalid thumbview class";
       }
     }
-    if (this._titleContainer !== undefined) {
+    if (isString(this._titleContainer)) {
       if (!$(this._titleContainer).length) {
         return "invalid title class";
       }

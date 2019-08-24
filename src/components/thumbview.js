@@ -5,11 +5,10 @@
  */
 import $ from "jquery";
 import {
-  isString,
   isNumber,
   isUndefined
 } from "../tools/typeChecks";
-
+import isElementPresent from "../tools/isElementPresent";
 import {
   BASE_Z_INDEX,
   THUMB_ELEMENT,
@@ -20,7 +19,7 @@ export default class Thumbview {
   init(thumbviewContainer, thumbClickCallback) {
     let success = false;
 
-    if (isString(thumbviewContainer) && $(thumbviewContainer).length) {
+    if (isElementPresent(thumbviewContainer)) {
       const thumbContainers = $(
         `${thumbviewContainer} ${THUMB_ELEMENT}`
       );
