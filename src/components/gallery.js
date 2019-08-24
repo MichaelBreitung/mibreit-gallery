@@ -20,7 +20,11 @@ import {
   isBoolean
 } from "../tools/typeChecks";
 import {
-  ENTER_FULLSCREEN_BUTTON
+  ENTER_FULLSCREEN_BUTTON,
+  SLIDESHOW_NEXT,
+  SLIDESHOW_PREVIOUS,
+  THUMBVIEW_NEXT,
+  THUMBVIEW_PREVIOUS
 } from "../tools/globals";
 
 // const
@@ -35,42 +39,13 @@ export default class GalleryBuilder extends SlideshowBuilder {
 
     super(slideshowContainer);
     // defaults
-
-    this.thumbviewContainer = ".mibreit-thumbview";
-    this.thumbviewNext = ".mibreit-thumbview-next";
-    this.thumbviewPrevious = ".mibreit-thumbview-previous";
-    this.slideshowNext = ".mibreit-slideshow-next";
-    this.slideshowPrevious = ".mibreit-slideshow-previous";
+    this.thumbviewContainer = undefined;
     this.titleContainer = undefined;
     this.allowFullscreen = true;
-  }
-  withSlideshowNextButton(button) {
-    if (isString(button)) {
-      this.slideshowNext = button;
-    }
-    return this;
-  }
-  withSlideshowPreviousButton(button) {
-    if (isString(button)) {
-      this.slideshowPrevious = button;
-    }
-    return this;
   }
   withThumbviewContainer(container) {
     if (isString(container)) {
       this.thumbviewContainer = container;
-    }
-    return this;
-  }
-  withThumbviewNextButton(button) {
-    if (isString(button)) {
-      this.thumbviewNext = button;
-    }
-    return this;
-  }
-  withThumbviewPreviousButton(button) {
-    if (isString(button)) {
-      this.thumbviewPrevious = button;
     }
     return this;
   }
@@ -88,49 +63,79 @@ export default class GalleryBuilder extends SlideshowBuilder {
   }
 
   buildGallery() {
+    const validationResult = this._validate();
+    if (this._validate() !== undefined) {
+      throw Error("buildGallery Error: " + validationResult);
+    }
     return new Gallery(this);
+  }
+
+  // private helper
+  _validate() {
+    if (this._thumviewContainer !== undefined) {
+      if (!$(this._thumbviewContainer).length) {
+        return "invalid thumbview class";
+      }
+    }
+    if (this._titleContainer !== undefined) {
+      if (!$(this._titleContainer).length) {
+        return "invalid title class";
+      }
+    }
+    return undefined;
   }
 }
 
 class Gallery {
   constructor(builder) {
-    this._mibreitSlideshow = builder.withImageChangedCallback(this._imageChangedCallback).buildSlideshow();
+    this._mibreitSlideshow = builder.buildSlideshow();
     this._slideshowContainer = builder.slideshowContainer;
-    this._slideshowPrevious = builder.slideshowPrevious;
-    this._slideshowNext = builder.slideshowNext;
     this._thumbviewContainer = builder.thumbviewContainer;
-    this._thumbviewPrevious = builder.thumbviewPrevious;
-    this._thumbviewNext = builder.thumbviewNext;
     this._allowFullscreen = builder.allowFullscreen;
     this._titleContainer = builder.titleContainer;
 
-    // not provided by builder    
+    // not provided by builder -> will be created during init   
     this._mibreitScroller = undefined;
     this._fullscreenController = undefined;
     this._fullscreenEnterButton = undefined;
+    this._slideshowPrevious = undefined;
+    this._slideshowNext = undefined;
+    this._thumbviewPrevious = undefined;
+    this._thumbviewNext = undefined;
   }
 
   init() {
     if (this._mibreitSlideshow.isInitialized()) {
-      // fullscreen
+      this._mibreitSlideshow.setImageChangedCallback(this._imageChangedCallback);
+
       if (this._allowFullscreen) {
         this._initFullscreen();
       }
 
-      // thumbview
-      this._initThumbview();
+      if (this._thumbviewContainer !== undefined) {
+        this._initThumbview();
+      }
 
-      // input
-      this._initKeyAndMouseEvents();
-
-      // title
       if (this._titleContainer !== undefined) {
         this._updateTitle(this._mibreitSlideshow.getCurrentImageTitle());
       }
+
+      this._initNavigationButtons();
+
+      this._initKeyAndMouseEvents();
+
       return true;
     } else {
       return false;
     }
+  }
+
+  startSlideshow() {
+    this._mibreitSlideshow.start();
+  }
+
+  stopSlideshow() {
+    this._mibreitSlideshow.stop();
   }
 
   // private helpers
@@ -146,10 +151,24 @@ class Gallery {
     }
   }
 
+  _initNavigationButtons() {
+    // add previous and next buttons
+    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_NEXT.substr(1)}"></div>`);
+    this._slideshowNext = $(`${this._slideshowContainer} ${SLIDESHOW_NEXT}`);
+    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_PREVIOUS.substr(1)}"></div>`);
+    this._slideshowPrevious = $(`${this._slideshowContainer} ${SLIDESHOW_PREVIOUS}`);
+  }
+
   _initThumbview() {
     if (new Thumbview().init(this._thumbviewContainer, this._thumbClickCallback)) {
       this._mibreitScroller = new ThumbviewScroller();
       if (this._mibreitScroller.init(this._thumbviewContainer)) {
+        // add previous and next buttons and hook up events
+        $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}"></div>`);
+        this._thumbviewPrevious = $(`${this._thumbviewContainer} ${THUMBVIEW_PREVIOUS}`);
+        $(this._thumbviewContainer).append(`<div class="${THUMBVIEW_NEXT.substr(1)}"></div>`);
+        this._thumbviewNext = $(`${this._thumbviewContainer} ${THUMBVIEW_NEXT}`);
+
         $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
         $(this._thumbviewNext).bind("click", this._scrollRightCallback);
       }
@@ -189,16 +208,20 @@ class Gallery {
   }
 
   _handlePreviousNextButtonsOpacity(show) {
-    $(this._slideshowNext).animate({
-        opacity: show ? 0.4 : 0.0
-      },
-      HOVER_ANIMATION_TIME
-    );
-    $(this._slideshowPrevious).animate({
-        opacity: show ? 0.4 : 0.0
-      },
-      HOVER_ANIMATION_TIME
-    );
+    if (this._slideshowNext !== undefined) {
+      $(this._slideshowNext).animate({
+          opacity: show ? 0.4 : 0.0
+        },
+        HOVER_ANIMATION_TIME
+      );
+    }
+    if (this._slideshowPrevious !== undefined) {
+      $(this._slideshowPrevious).animate({
+          opacity: show ? 0.4 : 0.0
+        },
+        HOVER_ANIMATION_TIME
+      );
+    }
   }
 
   // callbacks 

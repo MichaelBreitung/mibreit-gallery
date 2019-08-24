@@ -11,7 +11,9 @@ import {
 } from "../tools/typeChecks";
 
 import {
-  BASE_Z_INDEX
+  BASE_Z_INDEX,
+  THUMB_ELEMENT,
+  DATA_SRC_ATTRIBUTE
 } from "../tools/globals";
 
 export default class Thumbview {
@@ -20,11 +22,9 @@ export default class Thumbview {
 
     if (isString(thumbviewContainer) && $(thumbviewContainer).length) {
       const thumbContainers = $(
-        thumbviewContainer + " .mibreit-thumbElement"
+        `${thumbviewContainer} ${THUMB_ELEMENT}`
       );
-      const images = $(
-        thumbviewContainer + " .mibreit-thumbElement > img"
-      );
+      const images = $(`${thumbviewContainer} ${THUMB_ELEMENT} > img`);
 
       if (thumbContainers.length > 0 && thumbContainers.length === images.length) {
 
@@ -83,11 +83,11 @@ export default class Thumbview {
       this._positionThumb(image, thumbWidth, thumbHeight);
     }
 
-    if (image.hasAttribute("data-src")) {
+    if (image.hasAttribute(DATA_SRC_ATTRIBUTE)) {
       image.onload = function () {
-        this.removeAttribute("data-src");
+        this.removeAttribute(DATA_SRC_ATTRIBUTE);
       };
-      image.setAttribute("src", image.getAttribute("data-src"));
+      image.setAttribute("src", image.getAttribute(DATA_SRC_ATTRIBUTE));
     }
 
     // no context menu

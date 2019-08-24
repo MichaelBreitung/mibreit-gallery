@@ -14,7 +14,6 @@
   <script>
     $(document).ready(function () {
       var slideshow = mibreitGallery.createSlideshow({
-
         slideshowContainer: "#slideshow1",
         imageScaleMode: mibreitGallery.SCALE_MODE_STRETCH,
         interval: 4000
@@ -22,21 +21,15 @@
       slideshow.start();
 
       var gallery = mibreitGallery.createGallery({
-        showThumbView: false,
         slideshowContainer: "#gallery",
-        slideshowNext: "#gallery-next",
-        slideshowPrevious: "#gallery-previous",
         titleContainer: "#gallery-title",
         allowFullscreen: false
       });
 
       var fullGallery = mibreitGallery.createGallery({
         slideshowContainer: "#full-gallery",
-        slideshowNext: "#full-gallery-next",
-        slideshowPrevious: "#full-gallery-previous",
-        titleContainer: "#full-gallery-title",
-        showThumbView: true,
         thumbviewContainer: ".mibreit-thumbview",
+        titleContainer: "#full-gallery-title",
         allowFullscreen: true,
         preloadLeftNr: 2,
         preloadRightNr: 3,
@@ -109,8 +102,6 @@
                 alt="Revelation" width="480" height="720" />
               <h3>Hassan II Mosque</h3>
             </div>
-            <div id="gallery-next" class="mibreit-slideshow-next"></div>
-            <div id="gallery-previous" class="mibreit-slideshow-previous"></div>
           </div>
           <div id="gallery-title" class="mibreit-slideshow-title"></div>
           <h2>Full Gallery</h2>
@@ -200,84 +191,76 @@
                 width="1280" height="853" />
               <h3>Revelation</h3>
             </div>
-            <div id="full-gallery-next" class="mibreit-slideshow-next"></div>
-            <div id="full-gallery-previous" class="mibreit-slideshow-previous"></div>
           </div>
           <div class="mibreit-thumbview">
-            <div class="mibreit-thumbview-previous"></div>
-            <div class="mibreit-thumbs">
-
-              <div class="mibreit-thumbElement">
-                <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Heidelberg-Transition.jpg"
-                  width="100" height="50" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Cuernos.jpg" width="67" height="100"
-                  alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-
-              <div class="mibreit-thumbElement">
-                <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-              <div class="mibreit-thumbElement">
-                <img src="images/image-placeholder-transparent.png"
-                  data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
-                  height="80" alt="thumbnail" />
-              </div>
-
+            <div class="mibreit-thumbElement">
+              <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
+                height="80" alt="thumbnail" />
             </div>
-            <div class="mibreit-thumbview-next"></div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100" height="80"
+                alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Heidelberg-Transition.jpg" width="100"
+                height="50" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Cuernos.jpg" width="67" height="100"
+                alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+
+            <div class="mibreit-thumbElement">
+              <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100" height="80"
+                alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="https://www.mibreit-photo.com/galleries/favorites/thumb/Stubai-Mountains.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Fantasia.jpg" width="100" height="80"
+                alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Secret-Beach-Blues.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
+            <div class="mibreit-thumbElement">
+              <img src="images/image-placeholder-transparent.png"
+                data-src="https://www.mibreit-photo.com/galleries/favorites/thumb/Revelation.jpg" width="100"
+                height="80" alt="thumbnail" />
+            </div>
           </div>
           <div id="full-gallery-title" class="mibreit-slideshow-title"></div>
         </div>

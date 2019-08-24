@@ -33,7 +33,6 @@ export function createSlideshow(config) {
     .withInterval(config.interval)
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
-    .withImageChangedCallback(config.imageChangedCallback)
     .withScaleMode(config.imageScaleMode);
 
   const slideshow = slideshowBuilder.buildSlideshow();
@@ -54,16 +53,11 @@ export function createGallery(config) {
     .withInterval(config.interval)
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
-    .withImageChangedCallback(config.imageChangedCallback)
     .withScaleMode(config.imageScaleMode)
     .withFullscreen(config.allowFullscreen)
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
     .withThumbviewContainer(config.thumbviewContainer)
-    .withSlideshowNextButton(config.slideshowNext)
-    .withSlideshowPreviousButton(config.slideshowPrevious)
-    .withThumbviewNextButton(config.thumbviewNext)
-    .withThumbviewPreviousButton(config.thumbviewPrevious)
     .withTitleContainer(config.titleContainer);
 
   const gallery = galleryBuilder.buildGallery();

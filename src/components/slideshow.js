@@ -32,15 +32,10 @@ export default class SlideshowBuilder {
     // defaults
     this.interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
     this.scaleMode = SCALE_MODE_FITASPECT;
-    this.imageChangedCallback = undefined;
     this.preloadLeftNr = undefined;
     this.preloadRightNr = undefined;
 
     this.slideshowContainer = isString(slideshowContainer) ? slideshowContainer : "";
-  }
-  withImageChangedCallback(imageChangedCallback) {
-    this.imageChangedCallback = imageChangedCallback;
-    return this;
   }
   withInterval(interval) {
     if (isNumber(interval)) {
@@ -88,7 +83,6 @@ class Slideshow {
     this._slideshowContainer = builder.slideshowContainer;
     this._imageScaleMode = builder.scaleMode;
     this._interval = builder.interval;
-    this._imageChangedCallback = builder.imageChangedCallback;
 
     // not provided by builder
     this._currentIndex = 0;
@@ -96,6 +90,7 @@ class Slideshow {
     this._imageWrappers = [];
     this._intervalId = -1;
     this._baseZIndex = BASE_Z_INDEX;
+    this._imageChangedCallback = undefined;
     this._preloader = undefined;
 
     this._isInitialized = this._init(builder.preloaderLeftNr, builder.preloaderRightNr);
@@ -123,6 +118,10 @@ class Slideshow {
       clearInterval(this._intervalId);
       this._intervalId = -1;
     }
+  }
+
+  setImageChangedCallback(callback) {
+    this._imageChangedCallback = callback;
   }
 
   showImage = newIndex => {

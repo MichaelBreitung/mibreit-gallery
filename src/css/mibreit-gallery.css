@@ -1,4 +1,8 @@
-/* Slideshow styles */
+/* 
+ * This container style is just an example style for the slideshow container 
+ * -> you would typically replace this with your own style 
+ * Note: the class or id you use for this container is also a mandatory input for the gallery
+ */
 .mibreit-slideshow {
   position: relative;
   left: 0px;
@@ -9,6 +13,39 @@
   height: 680px;
   overflow: hidden;
 }
+
+/* 
+ * This title style is just an example style for the slideshow title 
+ * -> you would typically replace this with your own style 
+ * Note: the class or id you use for this container is also an optional input for the gallery
+ */
+.mibreit-slideshow-title {
+  position: relative;
+  margin: auto;
+  width: 720px;
+  text-align: center;
+}
+
+/* 
+ * This container style is just an example style for the thumbview container 
+ * -> you would typically replace this with your own style 
+ * Note: the class or id you use for this container is also an optional input for the gallery
+ */
+.mibreit-thumbview {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0.5rem;
+  width: 720px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* internal Slideshow styles */
 
 .mibreit-slideshow-next {
   position: absolute;
@@ -36,30 +73,6 @@
   opacity: 0;
 }
 
-/* Title Styles */
-
-.mibreit-slideshow-title {
-  position: relative;
-  margin: auto;
-  width: 720px;
-  text-align: center;
-}
-
-/* Thumbview styles */
-
-.mibreit-thumbview {
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0.5rem;
-  width: 720px;
-  height: 100px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
 .mibreit-thumbview-previous {
   width: 30px;
   height: 30px;
@@ -75,8 +88,6 @@
   background-repeat: no-repeat;
   background-position: center;
 }
-
-/* special styles */
 
 .mibreit-regular {
   position: relative;
