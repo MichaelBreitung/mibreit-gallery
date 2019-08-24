@@ -47,17 +47,16 @@ export default class ImageWrapper {
    */
   loadImage(callback) {
     if (!this.wasLoaded()) {
-      if (!isUndefined(callback)) {
-        this._image.onload = () => {
+      this._image.onload = () => {
+        this._image.removeAttribute(globals.DATA_SRC_ATTRIBUTE);
+        if (!isUndefined(callback)) {
           callback();
         }
       }
-
       this._image.setAttribute(
         "src",
         this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE)
       );
-      this._image.removeAttribute(globals.DATA_SRC_ATTRIBUTE);
       return true;
     } else {
       return false;
