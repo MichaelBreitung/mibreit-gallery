@@ -83,7 +83,7 @@ class Slideshow {
     this._interval = builder.interval;
 
     // not provided by builder
-    this._currentIndex = 0;
+    this._currentIndex = -1; // to allow initial image change
     this._imageContainers = [];
     this._imageWrappers = [];
     this._intervalId = -1;
@@ -123,12 +123,16 @@ class Slideshow {
   }
 
   showImage = newIndex => {
-    if (this._isValidIndex(newIndex) && newIndex != this._currentIndex) {
+    if (this._isValidIndex(newIndex)) {
       if (this._imageWrappers[newIndex].wasLoaded()) {
         this._changeCurrentImage(newIndex);
       } else {
-        this._preloader.loadImage(newIndex, () => {
+        this._preloader.loadImage(newIndex).then((wasLoaded) => {
+          this._preloader.setCurrentIndex(this._currentIndex);
           this._changeCurrentImage(newIndex);
+        }).catch(() => {
+          // should never happen
+          throw (new Error("Error in Slideshow#showImage"));
         });
       }
     }
@@ -186,8 +190,11 @@ class Slideshow {
         this.reinitSize();
       });
 
-      // and start preloading
+      // create preloader
       this._preloader = new Preloader(this._imageWrappers, this._currentIndex, preloaderLeftNr, preloaderRightNr);
+
+      // and finally show first image
+      this.showImage(0);
 
       return true;
     } else {
@@ -220,30 +227,30 @@ class Slideshow {
   }
 
   _changeCurrentImage(newIndex) {
-    $(this._imageContainers[newIndex]).animate({
-        opacity: 1.0
-      },
-      IMAGE_ANIMATION_TIME
-    );
-    $(this._imageContainers[this._currentIndex]).animate({
-        opacity: 0.0
-      },
-      IMAGE_ANIMATION_TIME
-    );
-    $(this._imageContainers[newIndex]).css({
-      "z-index": this._baseZIndex + 1
-    });
-    $(this._imageContainers[this._currentIndex]).css({
-      "z-index": this._baseZIndex
-    });
-    this._currentIndex = newIndex;
+    if (newIndex != this._currentIndex) {
+      $(this._imageContainers[newIndex]).animate({
+          opacity: 1.0
+        },
+        IMAGE_ANIMATION_TIME
+      );
+      $(this._imageContainers[this._currentIndex]).animate({
+          opacity: 0.0
+        },
+        IMAGE_ANIMATION_TIME
+      );
+      $(this._imageContainers[newIndex]).css({
+        "z-index": this._baseZIndex + 1
+      });
+      $(this._imageContainers[this._currentIndex]).css({
+        "z-index": this._baseZIndex
+      });
+      this._currentIndex = newIndex;
 
-    this.reinitSize();
+      this.reinitSize();
 
-    if (this._imageChangedCallback !== undefined) {
-      this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
+      if (this._imageChangedCallback !== undefined) {
+        this._imageChangedCallback(this._currentIndex, this.getCurrentImageTitle());
+      }
     }
-
-    this._preloader.setCurrentIndex(this._currentIndex);
   }
 }

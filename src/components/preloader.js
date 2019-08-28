@@ -21,7 +21,7 @@ export default class Preloader {
   constructor(imageWrappers, currentIndex, preloadLeftNr, preloadRightNr) {
     this._currentIndex = currentIndex;
     this._imageWrappers = imageWrappers;
-    this._loadedCount = 0;
+    this._loadedCount = this._getLoadedCount(imageWrappers);
     this._preloadLeftNr = PRELOAD_LEFT_SIZE;
     if (!isUndefined(preloadLeftNr)) {
       this._preloadLeftNr = preloadLeftNr;
@@ -31,8 +31,6 @@ export default class Preloader {
     if (!isUndefined(preloadRightNr)) {
       this._preloadRightNr = preloadRightNr;
     }
-
-    this._moveWindow();
   }
 
   setCurrentIndex(newIndex) {
@@ -42,16 +40,29 @@ export default class Preloader {
     }
   }
 
-  loadImage(index, callback) {
-    if (
-      this._loadedCount < this._imageWrappers.length &&
-      index >= 0 &&
-      index < this._imageWrappers.length
-    ) {
-      if (this._imageWrappers[index].loadImage(callback)) {
-        this._loadedCount++;
+  /** 
+   * Will directly load an image without changing the window of loaded images. This 
+   * has to be handled separately by setCurrentIndex
+   *     
+   * @return {Promise} Promise that will resolve with true once the image is loaded
+   *         or will resolve right away with false, if the image is in loading state; 
+   *         It will reject an invalid index
+   */
+  loadImage(index) {
+    return new Promise((resolve, reject) => {
+      if (index >= 0 && index < this._imageWrappers.length) {
+        this._imageWrappers[index].loadImage().then(() => {
+          this._loadedCount++;
+          resolve(true);
+        }).catch((wasLoaded) => {
+          // ending up here means that the image is either already loaded or in loading state -> resolve
+          resolve(wasLoaded);
+        });
+      } else {
+        // this is an invalid action and should be rejected
+        reject();
       }
-    }
+    });
   }
 
   _moveWindow() {
@@ -81,13 +92,17 @@ export default class Preloader {
 
   _loadImages(start, end) {
     for (let i = start; i < end && i < this._imageWrappers.length; i++) {
-      this._loadImage(this._imageWrappers[i]);
+      this.loadImage(i);
     }
   }
 
-  _loadImage(image) {
-    if (image.loadImage()) {
-      this._loadedCount++;
+  _getLoadedCount(imageWrappers) {
+    let loadedCount = 0;
+    for (const imageWrapper of imageWrappers) {
+      if (imageWrapper.wasLoaded()) {
+        loadedCount++;
+      }
     }
+    return loadedCount;
   }
 }

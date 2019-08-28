@@ -4,10 +4,11 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 
-import {
-  isUndefined
-} from "../tools/typeChecks";
 import * as globals from "../tools/globals";
+
+const IMAGE_INACTIVE = "IMAGE_INACTIVE";
+const IMAGE_LOADING = "IMAGE_LOADING";
+const IMAGE_LOADED = "IMAGE_LOADED";
 
 export default class ImageWrapper {
   constructor(image) {
@@ -15,10 +16,10 @@ export default class ImageWrapper {
     this._originalWidth = parseInt(this._image.getAttribute("width"));
     this._originalHeight = parseInt(this._image.getAttribute("height"));
     this._title = "";
+    this._state = (!this._image.hasAttribute("data-src")) ? IMAGE_LOADED : IMAGE_INACTIVE;
 
     // center image
     $(this._image).wrap("<div class=\"mibreit-center-box\"></div>");
-
 
     // disable drag
     $(this._image).on('dragstart', function () {
@@ -40,31 +41,32 @@ export default class ImageWrapper {
     this._title = this._image.getAttribute(globals.DATA_TITLE_ATTRIBUTE);
   }
 
-  /**   
-   * @param callback Optional callback that will be called once image loading is complete
-   * 
-   * @return {boolean} true if loading was started, false if image was already loaded
+  /**     
+   * @return {Promise} Promise that will resolve once the image is loaded 
+   *         and reject, if image was already loaded (with true) or is currently loading (with false)
    */
-  loadImage(callback) {
-    if (!this.wasLoaded()) {
-      this._image.onload = () => {
-        this._image.removeAttribute(globals.DATA_SRC_ATTRIBUTE);
-        if (!isUndefined(callback)) {
-          callback();
+  loadImage() {
+    return new Promise((resolve, reject) => {
+      if (this._isInactive()) {
+        this._image.onload = () => {
+          this._image.removeAttribute(globals.DATA_SRC_ATTRIBUTE);
+          this._state = IMAGE_LOADED;
+          resolve();
         }
+        this._state = IMAGE_LOADING;
+
+        this._image.setAttribute(
+          "src",
+          this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE)
+        );
+      } else {
+        reject(this.wasLoaded());
       }
-      this._image.setAttribute(
-        "src",
-        this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE)
-      );
-      return true;
-    } else {
-      return false;
-    }
+    });
   }
 
   wasLoaded() {
-    return !this._image.hasAttribute(globals.DATA_SRC_ATTRIBUTE);
+    return this._state === IMAGE_LOADED;
   }
 
   getTitle() {
@@ -137,5 +139,10 @@ export default class ImageWrapper {
     }
 
     return this._image;
+  }
+
+  // private helpers
+  _isInactive() {
+    return this._state === IMAGE_INACTIVE;
   }
 }
