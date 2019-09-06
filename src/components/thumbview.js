@@ -4,15 +4,15 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 import $ from "jquery";
+import ImageWrapper from "./imageWrapper";
 import {
-  isNumber,
   isUndefined
 } from "../tools/typeChecks";
 import isElementPresent from "../tools/isElementPresent";
 import {
   BASE_Z_INDEX,
   THUMB_ELEMENT,
-  DATA_SRC_ATTRIBUTE
+  SCALE_MODE_EXPAND
 } from "../tools/globals";
 
 export default class Thumbview {
@@ -26,21 +26,17 @@ export default class Thumbview {
       const images = $(`${thumbviewContainer} ${THUMB_ELEMENT} > img`);
 
       if (thumbContainers.length > 0 && thumbContainers.length === images.length) {
+        const thumbWrappers = this._wrapThumbs(images);
 
-        const thumbWidth = thumbContainers.innerWidth();
-        const thumbHeight = thumbContainers.innerHeight();
-
-        let _baseZIndex = $(thumbviewContainer).css("z-index");
-        if (!isNumber(_baseZIndex)) {
-          _baseZIndex = BASE_Z_INDEX;
-        }
-        this._elevateThumbContainers(thumbviewContainer, _baseZIndex);
+        this._ensureThumbContainerZIndex(thumbviewContainer);
 
         if (!isUndefined(thumbClickCallback)) {
           this._setupClickEvents(thumbContainers, thumbClickCallback);
         }
 
-        this._prepareThumbview(images, thumbWidth, thumbHeight);
+        this._setScaleModeForThumbs(thumbContainers, thumbWrappers);
+
+        this._preloadThumbs(thumbWrappers);
 
         success = true;
       }
@@ -48,12 +44,20 @@ export default class Thumbview {
     return success;
   }
 
-  _elevateThumbContainers(thumbContainer, zIndex) {
+  _wrapThumbs(images) {
+    let thumbWrappers = [];
+    for (let i = 0; i < images.length; i++) {
+      thumbWrappers.push(new ImageWrapper(images[i]));
+    }
+    return thumbWrappers;
+  }
 
-    $(thumbContainer).css({
-      "z-index": BASE_Z_INDEX
-    });
-
+  _ensureThumbContainerZIndex(thumbviewContainer) {
+    if (!$(thumbviewContainer).has("z-index")) {
+      $(thumbviewContainer).css({
+        "z-index": BASE_Z_INDEX
+      });
+    }
   }
 
   _setupClickEvents(thumbContainers, thumbClickCallback) {
@@ -69,61 +73,18 @@ export default class Thumbview {
     }
   }
 
-  _prepareThumbview(images, thumbWidth, thumbHeight) {
-    for (let i = 0; i < images.length; i++) {
-      this._prepareThumb(images[i], thumbWidth, thumbHeight);
+  _setScaleModeForThumbs(thumbContainers, thumbWrappers) {
+    const thumbWidth = thumbContainers.innerWidth();
+    const thumbHeight = thumbContainers.innerHeight();
+    for (const wrapper of thumbWrappers) {
+      wrapper.applyScaleMode(thumbWidth, thumbHeight, SCALE_MODE_EXPAND);
     }
   }
 
-  _prepareThumb(image, thumbWidth, thumbHeight) {
-    if (image.hasAttribute("width") && image.hasAttribute("height")) {
-      this._scaleThumb(image, thumbWidth, thumbHeight);
-
-      this._positionThumb(image, thumbWidth, thumbHeight);
+  _preloadThumbs(thumbWrappers) {
+    for (const wrapper of thumbWrappers) {
+      wrapper.loadImage().catch(() => { // NOTHING
+      });
     }
-
-    if (image.hasAttribute(DATA_SRC_ATTRIBUTE)) {
-      image.onload = function () {
-        this.removeAttribute(DATA_SRC_ATTRIBUTE);
-      };
-      image.setAttribute("src", image.getAttribute(DATA_SRC_ATTRIBUTE));
-    }
-
-    // no context menu
-    $(image).contextmenu(function () {
-      return false;
-    });
-  }
-
-  _scaleThumb(image, thumbWidth, thumbHeight) {
-    let width = parseInt(image.getAttribute("width"));
-    let height = parseInt(image.getAttribute("height"));
-    const aspect = width / height;
-    let scaler = 1;
-    if (thumbWidth / thumbHeight > aspect) {
-      // fit based on width
-      scaler = thumbWidth / width;
-    } else {
-      // fit based on height
-      scaler = thumbHeight / height;
-    }
-    height *= scaler;
-    width *= scaler;
-
-    image.setAttribute("width", width);
-    image.setAttribute("height", height);
-  }
-
-  _positionThumb(image, thumbWidth, thumbHeight) {
-    const width = parseInt(image.getAttribute("width"));
-    const height = parseInt(image.getAttribute("height"));
-    const x = (width + thumbWidth) / 2 - width;
-    const y = (height + thumbHeight) / 2 - height;
-    $(image).css({
-      marginLeft: x
-    });
-    $(image).css({
-      marginTop: y
-    });
   }
 }
