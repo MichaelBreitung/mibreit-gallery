@@ -1,8 +1,6 @@
-import "./demo-css/general.css";
 import "./css/mibreit-gallery.css";
 import "./css/mibreit-slideshow.css";
 import "./css/mibreit-thumbview.css";
-
 
 import "./images/next-image.png";
 import "./images/previous-image.png";
