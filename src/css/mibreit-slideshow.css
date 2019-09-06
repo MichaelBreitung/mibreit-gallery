@@ -15,7 +15,6 @@
 }
 
 .mibreit-imageElement img {
-  position: relative;
   margin: auto;
   padding: 0;
   align-self: center;
@@ -26,6 +25,7 @@
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .mibreit-imageElement h3 {
