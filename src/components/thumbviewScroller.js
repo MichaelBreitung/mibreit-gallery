@@ -18,7 +18,7 @@ export default class ThumbviewScroller {
     this._nrVisibleImages = 0;
     this._midPositionId = 0;
     this._startPositionId = 0;
-    this._stepSize = false;
+    this._stepSize = 1;
   }
 
   init(thumbviewContainer) {
