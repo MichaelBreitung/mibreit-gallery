@@ -211,7 +211,7 @@ class Slideshow {
 
   _wrapImages(images) {
     for (let i = 0; i < images.length; i++) {
-      this._imageWrappers.push(new ImageWrapper(images[i]));
+      this._imageWrappers.push(new ImageWrapper(images[i], true));
     }
   }
 
