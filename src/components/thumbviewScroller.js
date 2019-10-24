@@ -120,10 +120,11 @@ export default class ThumbviewScroller {
 
   _moveScroller() {
     if (this._scroller !== false) {
+      this._scroller.stop();
       this._scroller.animate({
           left: -this._startPositionId * this._stepSize
         },
-        800
+        600
       );
     }
   }
