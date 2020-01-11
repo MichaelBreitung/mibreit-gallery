@@ -1,5 +1,5 @@
 /**
- * @class Thumbview
+ * @class Loader
  * @author Michael Breitung
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
@@ -15,10 +15,9 @@ import {
   SCALE_MODE_EXPAND
 } from "../tools/globals";
 
-export default class Thumbview {
+class Loader {
   init(thumbviewContainer, thumbClickCallback) {
-    let success = false;
-
+    let thumbWrappers = null;
     if (isElementPresent(thumbviewContainer)) {
       const thumbContainers = $(
         `${thumbviewContainer} ${THUMB_ELEMENT}`
@@ -26,7 +25,7 @@ export default class Thumbview {
       const images = $(`${thumbviewContainer} ${THUMB_ELEMENT} > img`);
 
       if (thumbContainers.length > 0 && thumbContainers.length === images.length) {
-        const thumbWrappers = this._wrapThumbs(images);
+        thumbWrappers = this._wrapThumbs(images);
 
         this._ensureThumbContainerZIndex(thumbviewContainer);
 
@@ -35,13 +34,10 @@ export default class Thumbview {
         }
 
         this._setScaleModeForThumbs(thumbContainers, thumbWrappers);
-
         this._preloadThumbs(thumbWrappers);
-
-        success = true;
       }
     }
-    return success;
+    return thumbWrappers;
   }
 
   _wrapThumbs(images) {
@@ -87,4 +83,9 @@ export default class Thumbview {
       });
     }
   }
+}
+
+export default function (thumbviewContainer, thumbClickCallback) {
+  const loader = new Loader();
+  return loader.init(thumbviewContainer, thumbClickCallback);
 }

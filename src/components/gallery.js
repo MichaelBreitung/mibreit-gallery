@@ -11,7 +11,7 @@ import {
   SWIPE_LEFT,
   CLICK
 } from "jquery-swipe-handler";
-import Thumbview from "./thumbview";
+import prepareThumbviewImages from "./prepareThumbviewImages";
 import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
@@ -160,19 +160,20 @@ class Gallery {
   }
 
   _initThumbview() {
-    if (new Thumbview().init(this._thumbviewContainer, this._thumbClickCallback)) {
-      this._mibreitScroller = new ThumbviewScroller();
-      if (this._mibreitScroller.init(this._thumbviewContainer)) {
-        // add previous and next buttons and hook up events
-        $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}"></div>`);
-        this._thumbviewPrevious = $(`${this._thumbviewContainer} ${THUMBVIEW_PREVIOUS}`);
-        $(this._thumbviewContainer).append(`<div class="${THUMBVIEW_NEXT.substr(1)}"></div>`);
-        this._thumbviewNext = $(`${this._thumbviewContainer} ${THUMBVIEW_NEXT}`);
 
-        $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
-        $(this._thumbviewNext).bind("click", this._scrollRightCallback);
-      }
+    this._mibreitScroller = new ThumbviewScroller();
+    if (this._mibreitScroller.init(this._thumbviewContainer)) {
+      const thumbs = prepareThumbviewImages(this._thumbviewContainer, this._thumbClickCallback);
+      // add previous and next buttons and hook up events
+      $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}"></div>`);
+      this._thumbviewPrevious = $(`${this._thumbviewContainer} ${THUMBVIEW_PREVIOUS}`);
+      $(this._thumbviewContainer).append(`<div class="${THUMBVIEW_NEXT.substr(1)}"></div>`);
+      this._thumbviewNext = $(`${this._thumbviewContainer} ${THUMBVIEW_NEXT}`);
+
+      $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
+      $(this._thumbviewNext).bind("click", this._scrollRightCallback);
     }
+
   }
 
   _initKeyAndMouseEvents() {

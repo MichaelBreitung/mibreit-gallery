@@ -5,6 +5,10 @@
  */
 
 import * as globals from "../tools/globals";
+import {
+  isString,
+  isNumber
+} from "../tools/typeChecks";
 
 const IMAGE_INACTIVE = "IMAGE_INACTIVE";
 const IMAGE_LOADING = "IMAGE_LOADING";
@@ -13,6 +17,7 @@ const IMAGE_LOADED = "IMAGE_LOADED";
 export default class ImageWrapper {
   constructor(image, limitMaxSize) {
     this._image = image;
+    this._scaleMode = globals.SCALE_MODE_FITASPECT;
     this._originalWidth = parseInt(this._image.getAttribute("width"));
     this._originalHeight = parseInt(this._image.getAttribute("height"));
     if (limitMaxSize) {
@@ -88,19 +93,24 @@ export default class ImageWrapper {
   }
 
   applyScaleMode(containerWidth, containerHeight, scaleMode) {
-    switch (scaleMode) {
-      case globals.SCALE_MODE_STRETCH:
-        this._applyStretch();
-        break;
-      case globals.SCALE_MODE_EXPAND:
-        this._applyExpand(containerWidth, containerHeight);
-        break;
-      case globals.SCALE_MODE_FITASPECT:
-        this._applyFitAspect(containerWidth, containerHeight);
-        break;
-      case globals.SCALE_MODE_NONE:
-      default:
-        this._applyNone(containerWidth, containerHeight);
+    if (isNumber(containerWidth) && isNumber(containerHeight)) {
+      if (isString(scaleMode)) {
+        this._scaleMode = scaleMode;
+      }
+      switch (this._scaleMode) {
+        case globals.SCALE_MODE_STRETCH:
+          this._applyStretch();
+          break;
+        case globals.SCALE_MODE_EXPAND:
+          this._applyExpand(containerWidth, containerHeight);
+          break;
+        case globals.SCALE_MODE_FITASPECT:
+          this._applyFitAspect(containerWidth, containerHeight);
+          break;
+        case globals.SCALE_MODE_NONE:
+        default:
+          this._applyNone(containerWidth, containerHeight);
+      }
     }
   }
 

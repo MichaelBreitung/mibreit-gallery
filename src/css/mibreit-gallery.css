@@ -5,12 +5,12 @@
  */
 .mibreit-slideshow {
   position: relative;
-  left: 0px;
+  left: 0;
   margin: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 720px;
-  height: 680px;
+  width: 100%;
+  height: 43rem;
   overflow: hidden;
 }
 
@@ -22,7 +22,7 @@
 .mibreit-slideshow-title {
   position: relative;
   margin: auto;
-  width: 720px;
+  width: 100%;
   text-align: center;
 }
 
@@ -36,8 +36,8 @@
   margin-left: auto;
   margin-right: auto;
   top: 0.5rem;
-  width: 720px;
-  height: 100px;
+  width: 45rem;
+  height: 5.5rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -53,9 +53,9 @@
   background-image: url("../images/next-image.png");
   background-repeat: no-repeat;
   background-position: center;
-  width: 36px;
-  height: 50px;
-  right: 5px;
+  width: 2rem;
+  height: 3rem;
+  right: 0.25rem;
   top: 45%;
   opacity: 0;
 }
@@ -66,27 +66,29 @@
   background-image: url("../images/previous-image.png");
   background-repeat: no-repeat;
   background-position: center;
-  width: 36px;
-  height: 50px;
-  left: 5px;
+  width: 2rem;
+  height: 3rem;
+  left: 0.25rem;
   top: 45%;
   opacity: 0;
 }
 
 .mibreit-thumbview-previous {
-  width: 30px;
-  height: 30px;
+  width: 1.25rem;
+  max-width: 20px;
+  height: 1.25rem;
+  max-height: 20px;
   background-image: url("../images/previous.png");
-  background-repeat: no-repeat;
-  background-position: center;
+  background-size: cover;
 }
 
 .mibreit-thumbview-next {
-  width: 30px;
-  height: 30px;
+  width: 1.25rem;
+  max-width: 20px;
+  height: 1.25rem;
+  max-height: 20px;
   background-image: url("../images/next.png");
-  background-repeat: no-repeat;
-  background-position: center;
+  background-size: cover;
 }
 
 .mibreit-regular {
@@ -98,9 +100,8 @@
   box-sizing: border-box;
   background-color: #181818;
   overflow: hidden;
-  top: 0px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  top: 0;
+  padding: 1rem;
   width: 100%;
   height: 100%;
   z-index: 20;
@@ -112,13 +113,13 @@
   position: absolute;
   z-index: 12;
   background-image: url("../images/fullscreen.png");
-  background-size: 40px;
+  background-size: 2rem;
   background-repeat: no-repeat;
   background-position: center;
-  width: 40px;
-  height: 40px;
-  right: 5px;
-  top: 5px;
+  width: 2rem;
+  height: 2rem;
+  right: 0.25rem;
+  top: 0.25rem;
   opacity: 0;
 }
 
@@ -126,12 +127,12 @@
   position: absolute;
   z-index: 12;
   background-image: url("../images/exit-fullscreen.png");
-  background-size: 64px;
+  background-size: 3rem;
   background-repeat: no-repeat;
   background-position: center;
-  width: 64px;
-  height: 64px;
+  width: 3rem;
+  height: 3rem;
   opacity: 0.8;
-  right: 25px;
-  top: 25px;
+  right: 1rem;
+  top: 1rem;
 }
