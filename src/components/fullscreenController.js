@@ -13,6 +13,10 @@ import {
 } from "../tools/globals";
 import isElementPresent from "../tools/isElementPresent";
 
+const WIDTH_100_CLASS = "width-100";
+const FLEX_GROW_1_CLASS = "flex-grow-1";
+const FLEX_GROW_0_CLASS = "flex-grow-0";
+
 export default class FullscreenController {
   constructor() {
     this._slideshowContainer = undefined;
@@ -47,15 +51,16 @@ export default class FullscreenController {
   toggleFullscreen = () => {
     if (this._isFullscreen) {
       $(this._slideshowContainer).appendTo(REGULAR_CLASS);
-      $(this._slideshowContainer).css({
-        width: this._oldWidth,
-        height: this._oldHeight
-      });
+      $(this._slideshowContainer).removeClass(WIDTH_100_CLASS);
+      $(this._slideshowContainer).removeClass(FLEX_GROW_1_CLASS);
+
       if (isElementPresent(this._thumbviewContainer)) {
         $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
+        $(this._thumbviewContainer).removeClass(FLEX_GROW_0_CLASS);
       }
       if (isElementPresent(this._titleContainer)) {
         $(this._titleContainer).appendTo(REGULAR_CLASS);
+        $(this._titleContainer).removeClass(FLEX_GROW_0_CLASS);
       }
       $(FULLSCREEN_CLASS).remove();
       this._isFullscreen = false;
@@ -64,29 +69,21 @@ export default class FullscreenController {
         this.createRegularWrapper();
       }
 
-      this._oldWidth = $(this._slideshowContainer).css("width");
-      this._oldHeight = $(this._slideshowContainer).css("height");
-
       $("body").append(
         `<div class="${FULLSCREEN_CLASS.substr(1)}"><div class='exit-fullscreen'></div></div>`
       );
       $(".exit-fullscreen").click(this.toggleFullscreen);
       $(this._slideshowContainer).appendTo(FULLSCREEN_CLASS);
-      $(this._slideshowContainer).css({
-        width: "100%",
-        "flex-grow": 1
-      });
+      $(this._slideshowContainer).addClass(WIDTH_100_CLASS);
+      $(this._slideshowContainer).addClass(FLEX_GROW_1_CLASS);
+
       if (isElementPresent(this._thumbviewContainer)) {
         $(this._thumbviewContainer).appendTo(FULLSCREEN_CLASS);
-        $(this._thumbviewContainer).css({
-          "flex-grow": 0
-        });
+        $(this._thumbviewContainer).addClass(FLEX_GROW_0_CLASS);
       }
       if (isElementPresent(this._titleContainer)) {
         $(this._titleContainer).appendTo(FULLSCREEN_CLASS);
-        $(this._titleContainer).css({
-          "flex-grow": 0
-        });
+        $(this._titleContainer).addClass(FLEX_GROW_0_CLASS);
       }
       this._isFullscreen = true;
     }

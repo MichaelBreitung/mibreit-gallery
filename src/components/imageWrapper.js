@@ -123,7 +123,6 @@ export default class ImageWrapper {
 
   _applyExpand(containerWidth, containerHeight) {
     const aspect = this._originalWidth / this._originalHeight;
-
     if (containerWidth / containerHeight > aspect) {
       // fit based on width
       $(this._image).css({

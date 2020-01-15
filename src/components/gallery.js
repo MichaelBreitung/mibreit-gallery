@@ -11,7 +11,7 @@ import {
   SWIPE_LEFT,
   CLICK
 } from "jquery-swipe-handler";
-import prepareThumbviewImages from "./prepareThumbviewImages";
+import ThumbManager from "./thumbManager";
 import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
@@ -96,6 +96,7 @@ class Gallery {
 
     // not provided by builder -> will be created during init   
     this._mibreitScroller = undefined;
+    this._mibreitThumbManager = undefined;
     this._fullscreenController = undefined;
     this._fullscreenEnterButton = undefined;
     this._slideshowPrevious = undefined;
@@ -160,10 +161,11 @@ class Gallery {
   }
 
   _initThumbview() {
-
     this._mibreitScroller = new ThumbviewScroller();
     if (this._mibreitScroller.init(this._thumbviewContainer)) {
-      const thumbs = prepareThumbviewImages(this._thumbviewContainer, this._thumbClickCallback);
+      this._mibreitThumbManager = new ThumbManager();
+      this._mibreitThumbManager.init(this._thumbviewContainer, this._thumbClickCallback);
+
       // add previous and next buttons and hook up events
       $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}"></div>`);
       this._thumbviewPrevious = $(`${this._thumbviewContainer} ${THUMBVIEW_PREVIOUS}`);
@@ -280,6 +282,8 @@ class Gallery {
 
   _fullscreenChangedCallback = (fullscreen) => {
     this._mibreitSlideshow.reinitSize();
+    this._mibreitScroller.reinitSize();
+    this._mibreitThumbManager.reinitSize();
     if (fullscreen) {
       $(this._fullscreenEnterButton).css({
         opacity: 0.0,

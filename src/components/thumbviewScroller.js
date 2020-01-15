@@ -20,54 +20,58 @@ export default class ThumbviewScroller {
     this._midPositionId = 0;
     this._startPositionId = 0;
     this._stepSize = 1;
+    this._thumbviewContainer = undefined;
+    this._scroller = undefined;
+    this._thumbContainers = [];
+    this._newVisibleWidth = 0;
   }
 
   init(thumbviewContainer) {
-    let success = false;
-
     if (isElementPresent(thumbviewContainer)) {
-      const visibleWidth = $(thumbviewContainer).width() - parseInt($(":root").css("font-size")) * 2.5; // leave space for buttons, which take 2.5rem    
-      const thumbContainers = $(`${thumbviewContainer} ${THUMB_ELEMENT}`);
-      if (thumbContainers.length > 0) {
-        thumbContainers.wrapAll(
+      this._thumbviewContainer = thumbviewContainer;
+      this._thumbContainers = $(`${thumbviewContainer} ${THUMB_ELEMENT}`);
+      this._nrOfImages = this._thumbContainers.length;
+
+      if (this._nrOfImages > 0) {
+        this._thumbContainers.wrapAll(
           `<div class="${THUMBS_SCROLLER.substr(1)}" />`
         );
-        $(THUMBS_SCROLLER).wrap(
-          `<div class="${THUMBS.substr(1)}" />`
-        );
+        $(THUMBS_SCROLLER).wrap(`<div class="${THUMBS.substr(1)}" />`);
 
         if ($(THUMBS).css("display") === "flex") {
           $(THUMBS).css({
-            display: "block",
-            width: `${visibleWidth}px`
+            display: "block"
           });
         }
 
         this._scroller = $(`${thumbviewContainer} ${THUMBS_SCROLLER}`);
 
-        this._stepSize = visibleWidth / NR_OF_VISIBLE_THUMBS;
+        this._resizeNeeded();
 
-        this._nrOfImages = thumbContainers.length;
-        this._nrVisibleImages = Math.floor(visibleWidth / this._stepSize);
+        // make thumbview responsive to orientation changes
+        window.addEventListener(
+          "orientationchange", () => {
+            setTimeout(() => {
+              this._resizeNeeded();
+            }, 100);
+          }
+        );
 
-        if (this._nrOfImages <= this._nrVisibleImages) {
-          this._allowMovement = false;
-          this._scroller.css({
-            left: (this._scroller.width() - this._stepSize * this._nrOfImages) / 2
-          });
-        } else {
-          this._allowMovement = true;
-          this._midPositionId = Math.floor(this._nrVisibleImages / 2);
-        }
+        // make thumbview responsive to size changes
+        $(window).resize(() => {
+          this._resizeNeeded();
+        });
 
-        const margin = parseInt($(thumbContainers[0]).css("margin-left")) + parseInt($(thumbContainers[0]).css("margin-right"));
-
-        this._resizeThumbs(thumbContainers, margin);
-
-        success = true;
+        return true;
       }
     }
-    return success;
+    return false;
+  }
+
+  reinitSize() {
+    if (this._scroller) {
+      this._resizeNeeded();
+    }
   }
 
   /**
@@ -84,7 +88,7 @@ export default class ThumbviewScroller {
       } else {
         this._startPositionId = this._nrOfImages - this._nrVisibleImages;
       }
-      this._moveScroller();
+      this._moveScroller(true);
     }
   }
 
@@ -101,7 +105,7 @@ export default class ThumbviewScroller {
         this._startPositionId = newPosId;
       }
 
-      this._moveScroller();
+      this._moveScroller(true);
     }
   }
 
@@ -117,27 +121,63 @@ export default class ThumbviewScroller {
         this._startPositionId = newPosId;
       }
 
-      this._moveScroller();
+      this._moveScroller(true);
     }
   }
 
-  _moveScroller() {
-    if (this._scroller !== false) {
+  _moveScroller(animate) {
+    if (this._scroller) {
       this._scroller.stop();
-      this._scroller.animate({
+      if (animate) {
+        this._scroller.animate({
+            left: -this._startPositionId * this._stepSize
+          },
+          600
+        );
+      } else {
+        this._scroller.css({
           left: -this._startPositionId * this._stepSize
-        },
-        600
-      );
+        });
+      }
     }
   }
 
-  _resizeThumbs(thumbs, margin) {
-    for (const thumb of thumbs) {
-      $(thumb).css({
-        width: `${this._stepSize-margin}px`,
-        height: `${this._stepSize-margin}px`
+  _resizeNeeded() {
+    const newVisibleWidth = $(this._thumbviewContainer).width() - parseInt($(":root").css("font-size")) * 2.5; // leave space for buttons, which take 2.5rem    
+    if (this._newVisibleWidth !== newVisibleWidth) {
+      this._newVisibleWidth = newVisibleWidth;
+
+      $(THUMBS).css({
+        width: `${this._newVisibleWidth}px`
       });
-    };
+
+      this._stepSize = this._newVisibleWidth / NR_OF_VISIBLE_THUMBS;
+      this._nrVisibleImages = Math.floor(this._newVisibleWidth / this._stepSize);
+
+      if (this._nrOfImages <= this._nrVisibleImages) {
+        this._allowMovement = false;
+        this._scroller.css({
+          left: (this._scroller.width() - this._stepSize * this._nrOfImages) / 2
+        });
+      } else {
+        this._allowMovement = true;
+        this._midPositionId = Math.floor(this._nrVisibleImages / 2);
+      }
+
+      this._resizeThumbs();
+      this._moveScroller(false);
+    }
+  }
+
+  _resizeThumbs() {
+    const margin =
+      parseInt($(this._thumbContainers[0]).css("margin-left")) +
+      parseInt($(this._thumbContainers[0]).css("margin-right"));
+    for (const thumb of this._thumbContainers) {
+      $(thumb).css({
+        width: `${this._stepSize - margin}px`,
+        height: `${this._stepSize - margin}px`
+      });
+    }
   }
 }
