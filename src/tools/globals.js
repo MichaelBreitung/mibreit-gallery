@@ -1,5 +1,5 @@
 export const BASE_Z_INDEX = 10;
-export const NR_OF_VISIBLE_THUMBS = 7;
+export const NR_OF_VISIBLE_THUMBS = 6;
 
 // css classes
 export const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";

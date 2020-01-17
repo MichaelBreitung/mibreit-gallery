@@ -110,9 +110,10 @@ form {
 #container {
   position: relative;
   margin: auto;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   margin-top: 0;
   width: 100%;
-  min-width: 600px;
   max-width: 1024px;
   max-height: 25000px;
   overflow: hidden;

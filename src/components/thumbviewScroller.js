@@ -143,7 +143,7 @@ export default class ThumbviewScroller {
   }
 
   _resizeNeeded() {
-    const newVisibleWidth = $(this._thumbviewContainer).width() - parseInt($(":root").css("font-size")) * 2.5; // leave space for buttons, which take 2.5rem    
+    const newVisibleWidth = $(this._thumbviewContainer).width() - parseFloat($(":root").css("font-size")) * 4.5; // leave space for buttons, which take 2.5rem        
     if (this._newVisibleWidth !== newVisibleWidth) {
       this._newVisibleWidth = newVisibleWidth;
 
@@ -171,8 +171,9 @@ export default class ThumbviewScroller {
 
   _resizeThumbs() {
     const margin =
-      parseInt($(this._thumbContainers[0]).css("margin-left")) +
-      parseInt($(this._thumbContainers[0]).css("margin-right"));
+      parseFloat($(this._thumbContainers[0]).css("margin-left")) +
+      parseFloat($(this._thumbContainers[0]).css("margin-right"));
+
     for (const thumb of this._thumbContainers) {
       $(thumb).css({
         width: `${this._stepSize - margin}px`,
