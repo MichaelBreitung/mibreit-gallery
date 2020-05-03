@@ -6,7 +6,7 @@ I've written this gallery for my homepage www.mibreit-photo.com to have an easy 
 
 ## Technology
 
-A mix of JS6 and JQuery was used. The gallery is reduced to a minimum set of functionality and the code is split into different files in an attempt to get a more object oriented result here.
+A mix of ES6 and JQuery was used. The gallery is reduced to a minimum set of functionality and the code is split into different files in an attempt to get a more object oriented result here.
 
 By splitting the codebase it's also possible to only use the Slideshow or the full Gallery, which itself contains the Slideshow.
 
