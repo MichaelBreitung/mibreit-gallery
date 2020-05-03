@@ -4,13 +4,8 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 
-import {
-  isString
-} from "../tools/typeChecks";
-import {
-  REGULAR_CLASS,
-  FULLSCREEN_CLASS
-} from "../tools/globals";
+import { isString } from "../tools/typeChecks";
+import { REGULAR_CLASS, FULLSCREEN_CLASS } from "../tools/globals";
 import isElementPresent from "../tools/isElementPresent";
 
 const WIDTH_100_CLASS = "width-100";
@@ -25,12 +20,7 @@ export default class FullscreenController {
     this._fullscreenChangedCallback = undefined;
   }
 
-  init(
-    slideshowContainer,
-    thumbviewContainer,
-    titleContainer,
-    fullScreenChangedCallback
-  ) {
+  init(slideshowContainer, thumbviewContainer, titleContainer, fullScreenChangedCallback) {
     if (isElementPresent(slideshowContainer)) {
       this._slideshowContainer = slideshowContainer;
 
@@ -39,7 +29,7 @@ export default class FullscreenController {
       this._titleContainer = titleContainer;
       this._fullscreenChangedCallback = fullScreenChangedCallback;
 
-      return true
+      return true;
     }
     return false;
   }
@@ -65,6 +55,8 @@ export default class FullscreenController {
       $(FULLSCREEN_CLASS).remove();
       this._isFullscreen = false;
     } else {
+      this._isFullscreen = true;
+
       if ($(REGULAR_CLASS).length === 0) {
         this.createRegularWrapper();
       }
@@ -85,7 +77,6 @@ export default class FullscreenController {
         $(this._titleContainer).appendTo(FULLSCREEN_CLASS);
         $(this._titleContainer).addClass(FLEX_GROW_0_CLASS);
       }
-      this._isFullscreen = true;
     }
 
     if (this._fullscreenChangedCallback) {

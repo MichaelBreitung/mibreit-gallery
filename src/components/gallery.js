@@ -5,38 +5,29 @@
  */
 
 import $ from "jquery";
-import {
-  handleSwipe,
-  SWIPE_RIGHT,
-  SWIPE_LEFT,
-  CLICK
-} from "jquery-swipe-handler";
+import { handleSwipe, SWIPE_RIGHT, SWIPE_LEFT, CLICK } from "jquery-swipe-handler";
 import ThumbManager from "./thumbManager";
 import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
-import {
-  isString,
-  isBoolean
-} from "../tools/typeChecks";
+import { isString, isBoolean } from "../tools/typeChecks";
 import {
   ENTER_FULLSCREEN_BUTTON,
   SLIDESHOW_NEXT,
   SLIDESHOW_PREVIOUS,
   THUMBVIEW_NEXT,
-  THUMBVIEW_PREVIOUS
+  THUMBVIEW_PREVIOUS,
 } from "../tools/globals";
 
 // const
 const HOVER_ANIMATION_TIME = 400;
 
-/** 
+/**
  * Builder is used to separate the configuration and building of the Gallery
  * from it's behavior.
  */
 export default class GalleryBuilder extends SlideshowBuilder {
   constructor(slideshowContainer) {
-
     super(slideshowContainer);
     // defaults
     this.thumbviewContainer = undefined;
@@ -94,7 +85,7 @@ class Gallery {
     this._allowFullscreen = builder.allowFullscreen;
     this._titleContainer = builder.titleContainer;
 
-    // not provided by builder -> will be created during init   
+    // not provided by builder -> will be created during init
     this._mibreitScroller = undefined;
     this._mibreitThumbManager = undefined;
     this._fullscreenController = undefined;
@@ -146,8 +137,14 @@ class Gallery {
 
     this._fullscreenEnterButton = $(`${this._slideshowContainer} ${ENTER_FULLSCREEN_BUTTON}`);
     const fullscreenController = new FullscreenController();
-    if (fullscreenController.init(this._slideshowContainer, this._thumbviewContainer,
-        this._titleContainer, this._fullscreenChangedCallback)) {
+    if (
+      fullscreenController.init(
+        this._slideshowContainer,
+        this._thumbviewContainer,
+        this._titleContainer,
+        this._fullscreenChangedCallback
+      )
+    ) {
       this._fullscreenController = fullscreenController;
     }
   }
@@ -175,7 +172,6 @@ class Gallery {
       $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
       $(this._thumbviewNext).bind("click", this._scrollRightCallback);
     }
-
   }
 
   _initKeyAndMouseEvents() {
@@ -189,7 +185,7 @@ class Gallery {
       $(this._fullscreenEnterButton).bind("click", this._fullscreenEnterClickCallback);
       // consume other touch events to avoid interference with images behind
       $(this._fullscreenEnterButton).bind("mouseup mousedown touchstart touchend", (event) => {
-        event.stopPropagation()
+        event.stopPropagation();
       });
     }
 
@@ -202,8 +198,9 @@ class Gallery {
 
   _handleFullscreenEnterButtonOpacity(show) {
     if (this._fullscreenEnterButton) {
-      $(this._fullscreenEnterButton).animate({
-          opacity: show && !this._fullscreenController.isFullscreen() ? 0.4 : 0.0
+      $(this._fullscreenEnterButton).animate(
+        {
+          opacity: show && !this._fullscreenController.isFullscreen() ? 0.4 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
@@ -212,49 +209,51 @@ class Gallery {
 
   _handlePreviousNextButtonsOpacity(show) {
     if (this._slideshowNext !== undefined) {
-      $(this._slideshowNext).animate({
-          opacity: show ? 0.4 : 0.0
+      $(this._slideshowNext).animate(
+        {
+          opacity: show ? 0.4 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
     }
     if (this._slideshowPrevious !== undefined) {
-      $(this._slideshowPrevious).animate({
-          opacity: show ? 0.4 : 0.0
+      $(this._slideshowPrevious).animate(
+        {
+          opacity: show ? 0.4 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
     }
   }
 
-  // callbacks 
+  // callbacks
 
-  _thumbClickCallback = id => {
+  _thumbClickCallback = (id) => {
     this._mibreitSlideshow.showImage(id);
   };
 
   _fullscreenEnterClickCallback = (event) => {
     this._fullscreenController.toggleFullscreen();
     event.stopPropagation();
-  }
+  };
 
   _scrollLeftCallback = () => {
     this._mibreitScroller.scrollLeft(6);
-  }
+  };
 
   _scrollRightCallback = () => {
     this._mibreitScroller.scrollRight(6);
-  }
+  };
 
   _mouseEnterCallback = () => {
     this._handlePreviousNextButtonsOpacity(true);
     this._handleFullscreenEnterButtonOpacity(true);
-  }
+  };
 
   _mouseLeaveCallback = () => {
     this._handlePreviousNextButtonsOpacity(false);
     this._handleFullscreenEnterButtonOpacity(false);
-  }
+  };
 
   _swipe = (direction, x, y) => {
     switch (direction) {
@@ -269,7 +268,7 @@ class Gallery {
         break;
       default:
     }
-  }
+  };
 
   _imageChangedCallback = (id, title) => {
     if (this._mibreitScroller !== undefined) {
@@ -285,11 +284,12 @@ class Gallery {
     this._mibreitScroller.reinitSize();
     this._mibreitThumbManager.reinitSize();
     if (fullscreen) {
+      $(this._fullscreenEnterButton).stop();
       $(this._fullscreenEnterButton).css({
         opacity: 0.0,
       });
     }
-  }
+  };
 
   _containerClickedCallback = (relativeX, containerWidth) => {
     if (relativeX < containerWidth / 2) {
@@ -299,7 +299,7 @@ class Gallery {
     }
   };
 
-  _keyDownCallback = event => {
+  _keyDownCallback = (event) => {
     const key = event.which;
     if (key === 37) {
       // left arrow
@@ -308,7 +308,7 @@ class Gallery {
       // right arrow
       this._mibreitSlideshow.showNextImage();
     } else if (key === 27) {
-      // escape      
+      // escape
       if (this._fullscreenController && this._fullscreenController.isFullscreen()) {
         this._fullscreenController.toggleFullscreen();
       }
