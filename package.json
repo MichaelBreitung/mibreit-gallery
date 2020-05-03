@@ -13,7 +13,7 @@
   },
   "author": "Michael Breitung",
   "dependencies": {
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "jquery-swipe-handler": "github:MichaelBreitung/jquery-swipe-handler"
   },
   "devDependencies": {
