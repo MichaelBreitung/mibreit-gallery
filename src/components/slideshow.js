@@ -6,23 +6,20 @@
 import $ from "jquery";
 import Preloader from "./preloader";
 import ImageWrapper from "./imageWrapper";
-import {
-  isNumber,
-  isUndefined
-} from "../tools/typeChecks";
+import { isNumber, isUndefined } from "../tools/typeChecks";
 import isElementPresent from "../tools/isElementPresent";
 import {
   BASE_Z_INDEX,
   IMAGE_ELEMENT_CLASS,
   SCALE_MODES,
-  SCALE_MODE_FITASPECT
+  SCALE_MODE_FITASPECT,
 } from "../tools/globals";
 
 // behavior
-const IMAGE_ANIMATION_TIME = 800;
+const IMAGE_CROSS_FADE_TIME = 800;
 const DEFAULT_IMAGE_CHANGE_INTERVAL = 3000;
 
-/** 
+/**
  * Builder is used to separate the configuration and building of the Slideshow
  * from it's behavior.
  */
@@ -30,6 +27,7 @@ export default class SlideshowBuilder {
   constructor(slideshowContainer) {
     // defaults
     this.interval = DEFAULT_IMAGE_CHANGE_INTERVAL;
+    this.zoom = undefined;
     this.scaleMode = SCALE_MODE_FITASPECT;
     this.preloadLeftNr = undefined;
     this.preloadRightNr = undefined;
@@ -38,6 +36,12 @@ export default class SlideshowBuilder {
   withInterval(interval) {
     if (isNumber(interval)) {
       this.interval = interval;
+    }
+    return this;
+  }
+  withZoom(zoom) {
+    if (isNumber(zoom)) {
+      this.zoom = zoom;
     }
     return this;
   }
@@ -81,6 +85,7 @@ class Slideshow {
     this._slideshowContainer = builder.slideshowContainer;
     this._imageScaleMode = builder.scaleMode;
     this._interval = builder.interval;
+    this._zoom = builder.zoom;
 
     // not provided by builder
     this._currentIndex = -1; // to allow initial image change
@@ -100,8 +105,11 @@ class Slideshow {
 
   reinitSize() {
     if (!isUndefined(this._imageWrappers[this._currentIndex])) {
-      this._imageWrappers[this._currentIndex].applyScaleMode($(this._slideshowContainer).width(),
-        $(this._slideshowContainer).height(), this._imageScaleMode);
+      this._imageWrappers[this._currentIndex].applyScaleMode(
+        $(this._slideshowContainer).width(),
+        $(this._slideshowContainer).height(),
+        this._imageScaleMode
+      );
     }
   }
 
@@ -122,36 +130,35 @@ class Slideshow {
     this._imageChangedCallback = callback;
   }
 
-  showImage = newIndex => {
+  showImage = (newIndex) => {
     if (this._isValidIndex(newIndex)) {
       if (this._imageWrappers[newIndex].wasLoaded()) {
         this._changeCurrentImage(newIndex);
       } else {
-        this._preloader.loadImage(newIndex).then((wasLoaded) => {
-          this._preloader.setCurrentIndex(this._currentIndex);
-          this._changeCurrentImage(newIndex);
-        }).catch(() => {
-          // should never happen
-          throw (new Error("Error in Slideshow#showImage"));
-        });
+        this._preloader
+          .loadImage(newIndex)
+          .then((wasLoaded) => {
+            this._preloader.setCurrentIndex(this._currentIndex);
+            this._changeCurrentImage(newIndex);
+          })
+          .catch(() => {
+            // should never happen
+            throw new Error("Error in Slideshow#showImage");
+          });
       }
     }
   };
 
   showNextImage = () => {
     var new_CurrentIndex =
-      this._currentIndex < this._imageContainers.length - 1 ?
-      this._currentIndex + 1 :
-      0;
+      this._currentIndex < this._imageContainers.length - 1 ? this._currentIndex + 1 : 0;
 
     this.showImage(new_CurrentIndex);
   };
 
   showPreviousImage = () => {
     var new_CurrentIndex =
-      this._currentIndex > 0 ?
-      this._currentIndex - 1 :
-      this._imageContainers.length - 1;
+      this._currentIndex > 0 ? this._currentIndex - 1 : this._imageContainers.length - 1;
 
     this.showImage(new_CurrentIndex);
   };
@@ -164,17 +171,12 @@ class Slideshow {
     }
   }
 
-
   // private helper methods
 
   _init(preloaderLeftNr, preloaderRightNr) {
-    this._imageContainers = $(
-      `${this._slideshowContainer} ${IMAGE_ELEMENT_CLASS}`
-    ).has("img");
+    this._imageContainers = $(`${this._slideshowContainer} ${IMAGE_ELEMENT_CLASS}`).has("img");
 
-    const images = $(
-      `${this._slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`
-    );
+    const images = $(`${this._slideshowContainer} ${IMAGE_ELEMENT_CLASS} > img`);
 
     if (this._imageContainers.length > 0 && this._imageContainers.length === images.length) {
       this._wrapImages(images);
@@ -191,7 +193,12 @@ class Slideshow {
       });
 
       // create preloader
-      this._preloader = new Preloader(this._imageWrappers, this._currentIndex, preloaderLeftNr, preloaderRightNr);
+      this._preloader = new Preloader(
+        this._imageWrappers,
+        this._currentIndex,
+        preloaderLeftNr,
+        preloaderRightNr
+      );
 
       // and finally show first image
       this.showImage(0);
@@ -203,10 +210,7 @@ class Slideshow {
   }
 
   _isValidIndex(index) {
-    return (
-      index >= 0 &&
-      index < this._imageContainers.length
-    );
+    return index >= 0 && index < this._imageContainers.length;
   }
 
   _wrapImages(images) {
@@ -217,33 +221,54 @@ class Slideshow {
 
   _prepareContainers() {
     $(this._imageContainers).css({
-      opacity: 0.0
+      opacity: 0.0,
     });
 
     $(this._imageContainers[this._currentIndex]).css({
-      opacity: 1.0,
-      "z-index": this._baseZIndex
+      "opacity": 1.0,
+      "z-index": this._baseZIndex,
     });
   }
 
   _changeCurrentImage(newIndex) {
     if (newIndex != this._currentIndex) {
-      $(this._imageContainers[newIndex]).animate({
-          opacity: 1.0
+      $(this._imageContainers[newIndex]).animate(
+        {
+          opacity: 1.0,
         },
-        IMAGE_ANIMATION_TIME
+        IMAGE_CROSS_FADE_TIME
       );
-      $(this._imageContainers[this._currentIndex]).animate({
-          opacity: 0.0
-        },
-        IMAGE_ANIMATION_TIME
-      );
+
       $(this._imageContainers[newIndex]).css({
-        "z-index": this._baseZIndex + 1
+        "z-index": this._baseZIndex + 1,
       });
-      $(this._imageContainers[this._currentIndex]).css({
-        "z-index": this._baseZIndex
-      });
+
+      if (isNumber(this._zoom)) {
+        this._imageWrappers[newIndex].startZoomAnimation(
+          this._zoom,
+          this._interval + IMAGE_CROSS_FADE_TIME
+        );
+      }
+
+      if (this._currentIndex != -1) {
+        const currentIndex = this._currentIndex; // for closure
+        $(this._imageContainers[this._currentIndex]).animate(
+          {
+            opacity: 0.0,
+          },
+          IMAGE_CROSS_FADE_TIME,
+          "swing",
+          () => {
+            if (isNumber(this._zoom)) {
+              this._imageWrappers[currentIndex].resetZoom();
+            }
+          }
+        );
+        $(this._imageContainers[this._currentIndex]).css({
+          "z-index": this._baseZIndex,
+        });
+      }
+
       this._currentIndex = newIndex;
 
       this.reinitSize();

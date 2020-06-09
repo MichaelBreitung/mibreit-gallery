@@ -5,10 +5,7 @@
  */
 
 import * as globals from "../tools/globals";
-import {
-  isString,
-  isNumber
-} from "../tools/typeChecks";
+import { isString, isNumber } from "../tools/typeChecks";
 
 const IMAGE_INACTIVE = "IMAGE_INACTIVE";
 const IMAGE_LOADING = "IMAGE_LOADING";
@@ -23,13 +20,11 @@ export default class ImageWrapper {
     if (limitMaxSize) {
       $(this._image).css({
         maxWidth: `${this._originalWidth}px`,
-        maxHeight: `${this._originalHeight}px`
+        maxHeight: `${this._originalHeight}px`,
       });
     }
     this._onLoadCallbackInternal = undefined;
-    this._state = !this._image.hasAttribute("data-src") ?
-      IMAGE_LOADED :
-      IMAGE_INACTIVE;
+    this._state = !this._image.hasAttribute("data-src") ? IMAGE_LOADED : IMAGE_INACTIVE;
 
     // wrapper flexbox for image centering
     $(this._image).wrap('<div class="mibreit-center-box"></div>');
@@ -74,10 +69,7 @@ export default class ImageWrapper {
         };
         this._state = IMAGE_LOADING;
 
-        this._image.setAttribute(
-          "src",
-          this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE)
-        );
+        this._image.setAttribute("src", this._image.getAttribute(globals.DATA_SRC_ATTRIBUTE));
       } else {
         reject(this.wasLoaded());
       }
@@ -114,10 +106,21 @@ export default class ImageWrapper {
     }
   }
 
+  startZoomAnimation(targetZoom, time) {
+    $(this._image).css({
+      transition: `transform ${time / 1000}s linear`,
+      transform: `scale(${targetZoom / 100})`,
+    });
+  }
+
+  resetZoom() {
+    $(this._image).css({ transition: "none", transform: "scale(1.0)" });
+  }
+
   _applyStretch() {
     $(this._image).css({
       width: "100%",
-      height: "100%"
+      height: "100%",
     });
   }
 
@@ -127,13 +130,13 @@ export default class ImageWrapper {
       // fit based on width
       $(this._image).css({
         width: `${containerWidth}px`,
-        height: `${containerWidth / aspect}px`
+        height: `${containerWidth / aspect}px`,
       });
     } else {
       // fit based on height
       $(this._image).css({
         width: `${containerHeight * aspect}px`,
-        height: `${containerHeight}px`
+        height: `${containerHeight}px`,
       });
     }
 
@@ -147,12 +150,12 @@ export default class ImageWrapper {
       if (containerHeight <= this._originalHeight) {
         $(this._image).css({
           width: "auto",
-          height: "100%"
+          height: "100%",
         });
       } else {
         $(this._image).css({
           width: "auto",
-          height: "auto"
+          height: "auto",
         });
       }
     } else {
@@ -160,12 +163,12 @@ export default class ImageWrapper {
       if (containerWidth <= this._originalWidth) {
         $(this._image).css({
           width: "100%",
-          height: "auto"
+          height: "auto",
         });
       } else {
         $(this._image).css({
           width: "auto",
-          height: "auto"
+          height: "auto",
         });
       }
     }
@@ -175,17 +178,17 @@ export default class ImageWrapper {
   _applyNone(containerWidth, containerHeight) {
     $(this._image).css({
       width: `${this._originalWidth}px`,
-      height: `${this._originalHeight}px`
+      height: `${this._originalHeight}px`,
     });
     this._centerImage(containerWidth, containerHeight);
   }
 
   _resetImagePosition() {
     $(this._image).css({
-      marginLeft: "auto"
+      marginLeft: "auto",
     });
     $(this._image).css({
-      marginTop: "auto"
+      marginTop: "auto",
     });
   }
 
@@ -201,10 +204,10 @@ export default class ImageWrapper {
       const x = (width + containerWidth) / 2 - width;
       const y = (height + containerHeight) / 2 - height;
       $(this._image).css({
-        marginLeft: x
+        marginLeft: x,
       });
       $(this._image).css({
-        marginTop: y
+        marginTop: y,
       });
     }
   }

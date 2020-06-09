@@ -10,9 +10,7 @@ import "./images/image-placeholder-transparent.png";
 import "./images/exit-fullscreen.png";
 import "./images/fullscreen.png";
 
-import {
-  isUndefined
-} from "./tools/typeChecks";
+import { isUndefined } from "./tools/typeChecks";
 
 import GalleryBuilder from "./components/gallery";
 
@@ -20,9 +18,8 @@ export {
   SCALE_MODE_STRETCH,
   SCALE_MODE_FITASPECT,
   SCALE_MODE_NONE,
-  SCALE_MODE_EXPAND
-}
-from "./tools/globals";
+  SCALE_MODE_EXPAND,
+} from "./tools/globals";
 
 export function createSlideshow(config) {
   if (isUndefined(config)) {
@@ -31,6 +28,7 @@ export function createSlideshow(config) {
 
   const slideshowBuilder = new GalleryBuilder(config.slideshowContainer)
     .withInterval(config.interval)
+    .withZoom(config.zoom)
     .withPreloaderLeftSize(config.preloaderLeftNr)
     .withPreloaderRightSize(config.preloaderRightNr)
     .withScaleMode(config.imageScaleMode);
