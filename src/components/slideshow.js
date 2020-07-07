@@ -105,11 +105,13 @@ class Slideshow {
 
   reinitSize() {
     if (!isUndefined(this._imageWrappers[this._currentIndex])) {
-      this._imageWrappers[this._currentIndex].applyScaleMode(
-        $(this._slideshowContainer).width(),
-        $(this._slideshowContainer).height(),
-        this._imageScaleMode
-      );
+      const width = $(this._slideshowContainer).width();
+      let height = $(this._slideshowContainer).height();
+      if (height === 0) {
+        // if we specify the height in terms of padding to achieve certain aspect
+        height = $(this._slideshowContainer).outerHeight();
+      }
+      this._imageWrappers[this._currentIndex].applyScaleMode(width, height, this._imageScaleMode);
     }
   }
 
