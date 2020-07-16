@@ -173,6 +173,14 @@ class Slideshow {
     }
   }
 
+  getCurrentImageUrl() {
+    if (this._isValidIndex(this._currentIndex)) {
+      return this._imageWrappers[this._currentIndex].getUrl();
+    } else {
+      return "";
+    }
+  }
+
   // private helper methods
 
   _init(preloaderLeftNr, preloaderRightNr) {

@@ -130,6 +130,14 @@ class Gallery {
     this._mibreitSlideshow.stop();
   }
 
+  getCurrentImageTitle() {
+    return this._mibreitSlideshow.getCurrentImageTitle();
+  }
+
+  getCurrentImageUrl() {
+    return this._mibreitSlideshow.getCurrentImageUrl();
+  }
+
   // private helpers
 
   _initFullscreen() {

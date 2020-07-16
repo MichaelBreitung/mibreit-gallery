@@ -84,6 +84,12 @@ export default class ImageWrapper {
     return this._title;
   }
 
+  getUrl() {
+    return this._image.hasAttribute("data-src")
+      ? this._image.getAttribute("data-src")
+      : this._image.getAttribute("src");
+  }
+
   applyScaleMode(containerWidth, containerHeight, scaleMode) {
     if (isNumber(containerWidth) && isNumber(containerHeight)) {
       if (isString(scaleMode)) {
