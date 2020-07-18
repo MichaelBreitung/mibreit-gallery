@@ -10,7 +10,7 @@ import ThumbManager from "./thumbManager";
 import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
-import { isString, isBoolean } from "../tools/typeChecks";
+import { isString, isBoolean, isUndefined } from "../tools/typeChecks";
 import {
   ENTER_FULLSCREEN_BUTTON,
   SLIDESHOW_NEXT,
@@ -55,7 +55,7 @@ export default class GalleryBuilder extends SlideshowBuilder {
 
   buildGallery() {
     const validationResult = this._validate();
-    if (this._validate() !== undefined) {
+    if (!isUndefined(validationResult)) {
       throw Error("buildGallery Error: " + validationResult);
     }
     return new Gallery(this);
@@ -94,6 +94,7 @@ class Gallery {
     this._slideshowNext = undefined;
     this._thumbviewPrevious = undefined;
     this._thumbviewNext = undefined;
+    this._externalImageChangedCallback = undefined;
   }
 
   init() {
@@ -104,11 +105,11 @@ class Gallery {
         this._initFullscreen();
       }
 
-      if (this._thumbviewContainer !== undefined) {
+      if (!isUndefined(this._thumbviewContainer)) {
         this._initThumbview();
       }
 
-      if (this._titleContainer !== undefined) {
+      if (!isUndefined(this._titleContainer)) {
         this._updateTitle(this._mibreitSlideshow.getCurrentImageTitle());
       }
 
@@ -128,6 +129,10 @@ class Gallery {
 
   stopSlideshow() {
     this._mibreitSlideshow.stop();
+  }
+
+  setImageChangedCallback(callback) {
+    this._externalImageChangedCallback = callback;
   }
 
   getCurrentImageTitle() {
@@ -216,7 +221,7 @@ class Gallery {
   }
 
   _handlePreviousNextButtonsOpacity(show) {
-    if (this._slideshowNext !== undefined) {
+    if (!isUndefined(this._slideshowNext)) {
       $(this._slideshowNext).animate(
         {
           opacity: show ? 0.4 : 0.0,
@@ -224,7 +229,7 @@ class Gallery {
         HOVER_ANIMATION_TIME
       );
     }
-    if (this._slideshowPrevious !== undefined) {
+    if (!isUndefined(this._slideshowPrevious)) {
       $(this._slideshowPrevious).animate(
         {
           opacity: show ? 0.4 : 0.0,
@@ -279,11 +284,14 @@ class Gallery {
   };
 
   _imageChangedCallback = (id, title) => {
-    if (this._mibreitScroller !== undefined) {
+    if (!isUndefined(this._mibreitScroller)) {
       this._mibreitScroller.scrollTo(id);
     }
-    if (this._titleContainer !== undefined) {
+    if (!isUndefined(this._titleContainer)) {
       this._updateTitle(title);
+    }
+    if (!isUndefined(this._externalImageChangedCallback)) {
+      this._externalImageChangedCallback(id);
     }
   };
 
