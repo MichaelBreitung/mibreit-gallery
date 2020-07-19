@@ -95,7 +95,15 @@
   background-size: cover;
 }
 
-.mibreit-regular {
+.mibreit-regular-slideshow {
+  position: relative;
+}
+
+.mibreit-regular-thumb {
+  position: relative;
+}
+
+.mibreit-regular-title {
   position: relative;
 }
 

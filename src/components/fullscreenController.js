@@ -4,8 +4,12 @@
  * @copyright Michael Breitung Photography (www.mibreit-photo.com)
  */
 
-import { isString } from "../tools/typeChecks";
-import { REGULAR_CLASS, FULLSCREEN_CLASS } from "../tools/globals";
+import {
+  REGULAR_CLASS,
+  REGULAR_THUMB_CLASS,
+  REGULAR_TITLE_CLASS,
+  FULLSCREEN_CLASS,
+} from "../tools/globals";
 import isElementPresent from "../tools/isElementPresent";
 
 const WIDTH_100_CLASS = "width-100";
@@ -45,11 +49,11 @@ export default class FullscreenController {
       $(this._slideshowContainer).removeClass(FLEX_GROW_1_CLASS);
 
       if (isElementPresent(this._thumbviewContainer)) {
-        $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
+        $(this._thumbviewContainer).appendTo(REGULAR_THUMB_CLASS);
         $(this._thumbviewContainer).removeClass(FLEX_GROW_0_CLASS);
       }
       if (isElementPresent(this._titleContainer)) {
-        $(this._titleContainer).appendTo(REGULAR_CLASS);
+        $(this._titleContainer).appendTo(REGULAR_TITLE_CLASS);
         $(this._titleContainer).removeClass(FLEX_GROW_0_CLASS);
       }
       $(FULLSCREEN_CLASS).remove();
@@ -89,10 +93,10 @@ export default class FullscreenController {
   createRegularWrapper() {
     $(this._slideshowContainer).wrap(`<div class="${REGULAR_CLASS.substr(1)}"></div>`);
     if (isElementPresent(this._thumbviewContainer)) {
-      $(this._thumbviewContainer).appendTo(REGULAR_CLASS);
+      $(this._thumbviewContainer).wrap(`<div class="${REGULAR_THUMB_CLASS.substr(1)}"></div>`);
     }
     if (isElementPresent(this._titleContainer)) {
-      $(this._titleContainer).appendTo(REGULAR_CLASS);
+      $(this._titleContainer).wrap(`<div class="${REGULAR_TITLE_CLASS.substr(1)}"></div>`);
     }
   }
 }

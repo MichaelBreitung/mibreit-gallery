@@ -6,7 +6,9 @@ export const IMAGE_ELEMENT_CLASS = ".mibreit-imageElement";
 export const THUMBS = ".mibreit-thumbs";
 export const THUMBS_SCROLLER = ".mibreit-thumbs-scroller";
 export const THUMB_ELEMENT = ".mibreit-thumbElement";
-export const REGULAR_CLASS = ".mibreit-regular";
+export const REGULAR_CLASS = ".mibreit-regular-slideshow";
+export const REGULAR_THUMB_CLASS = ".mibreit-regular-thumb";
+export const REGULAR_TITLE_CLASS = ".mibreit-regular-title";
 export const FULLSCREEN_CLASS = ".mibreit-fullscreen";
 export const ENTER_FULLSCREEN_BUTTON = ".mibreit-enter-fullscreen-button";
 export const SLIDESHOW_NEXT = ".mibreit-slideshow-next";
@@ -24,4 +26,9 @@ export const SCALE_MODE_STRETCH = "SCALE_MODE_STRETCH";
 export const SCALE_MODE_EXPAND = "SCALE_MODE_EXPAND";
 export const SCALE_MODE_FITASPECT = "SCALE_MODE_FITASPECT";
 export const SCALE_MODE_NONE = "SCALE_MODE_NONE";
-export const SCALE_MODES = [SCALE_MODE_STRETCH, SCALE_MODE_EXPAND, SCALE_MODE_FITASPECT, SCALE_MODE_NONE];
+export const SCALE_MODES = [
+  SCALE_MODE_STRETCH,
+  SCALE_MODE_EXPAND,
+  SCALE_MODE_FITASPECT,
+  SCALE_MODE_NONE,
+];
