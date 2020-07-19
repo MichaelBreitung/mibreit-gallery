@@ -206,7 +206,7 @@ class Gallery {
   }
 
   _updateTitle(title) {
-    $(this._titleContainer).html("<h3>" + title + "</h3>");
+    $(this._titleContainer).html(title);
   }
 
   _handleFullscreenEnterButtonOpacity(show) {
