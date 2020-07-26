@@ -181,6 +181,14 @@ class Slideshow {
     }
   }
 
+  getCurrentImageId() {
+    if (this._isValidIndex(this._currentIndex)) {
+      return this._currentIndex;
+    } else {
+      return -1;
+    }
+  }
+
   // private helper methods
 
   _init(preloaderLeftNr, preloaderRightNr) {

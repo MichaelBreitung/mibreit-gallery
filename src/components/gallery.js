@@ -131,6 +131,10 @@ class Gallery {
     this._mibreitSlideshow.stop();
   }
 
+  showImage(id) {
+    this._mibreitSlideshow.showImage(id);
+  }
+
   setImageChangedCallback(callback) {
     this._externalImageChangedCallback = callback;
   }
@@ -141,6 +145,10 @@ class Gallery {
 
   getCurrentImageUrl() {
     return this._mibreitSlideshow.getCurrentImageUrl();
+  }
+
+  getCurrentImageId() {
+    return this._mibreitSlideshow.getCurrentImageId();
   }
 
   // private helpers
