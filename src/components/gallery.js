@@ -10,7 +10,7 @@ import ThumbManager from "./thumbManager";
 import SlideshowBuilder from "./slideshow";
 import ThumbviewScroller from "./thumbviewScroller";
 import FullscreenController from "./fullscreenController";
-import { isString, isBoolean, isUndefined } from "../tools/typeChecks";
+import { isString, isBoolean, isUndefined, isNumber, isFunction } from "../tools/typeChecks";
 import {
   ENTER_FULLSCREEN_BUTTON,
   SLIDESHOW_NEXT,
@@ -132,10 +132,16 @@ class Gallery {
   }
 
   showImage(id) {
+    if (!isNumber(id)) {
+      throw new Error("Gallery#showImage Error: invalid type passed");
+    }
     this._mibreitSlideshow.showImage(id);
   }
 
   setImageChangedCallback(callback) {
+    if (!isFunction(callback)) {
+      throw new Error("Gallery#setImageChangedCallback Error: invalid type passed");
+    }
     this._externalImageChangedCallback = callback;
   }
 

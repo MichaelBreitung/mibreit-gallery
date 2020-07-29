@@ -6,7 +6,7 @@
 import $ from "jquery";
 import Preloader from "./preloader";
 import ImageWrapper from "./imageWrapper";
-import { isNumber, isUndefined } from "../tools/typeChecks";
+import { isNumber, isUndefined, isFunction } from "../tools/typeChecks";
 import isElementPresent from "../tools/isElementPresent";
 import {
   BASE_Z_INDEX,
@@ -129,10 +129,16 @@ class Slideshow {
   }
 
   setImageChangedCallback(callback) {
+    if (!isFunction(callback)) {
+      throw new Error("Slideshow#setImageChangedCallback Error: invalid type passed");
+    }
     this._imageChangedCallback = callback;
   }
 
   showImage = (newIndex) => {
+    if (!isNumber(newIndex)) {
+      throw new Error("Slideshow#showImage Error: invalid type passed");
+    }
     if (this._isValidIndex(newIndex)) {
       if (this._imageWrappers[newIndex].wasLoaded()) {
         this._changeCurrentImage(newIndex);

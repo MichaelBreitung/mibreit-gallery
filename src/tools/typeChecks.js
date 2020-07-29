@@ -2,6 +2,10 @@ export function isUndefined(value) {
   return typeof value === "undefined" || value === undefined;
 }
 
+export function isFunction(value) {
+  return typeof value === "function";
+}
+
 export function isString(value) {
   return typeof value === "string" || value instanceof String;
 }
