@@ -94,7 +94,7 @@ class Gallery {
     this._slideshowNext = undefined;
     this._thumbviewPrevious = undefined;
     this._thumbviewNext = undefined;
-    this._externalImageChangedCallback = undefined;
+    this._externalImageChangedCallbacks = [];
   }
 
   init() {
@@ -138,11 +138,11 @@ class Gallery {
     this._mibreitSlideshow.showImage(id);
   }
 
-  setImageChangedCallback(callback) {
+  addImageChangedCallback(callback) {
     if (!isFunction(callback)) {
       throw new Error("Gallery#setImageChangedCallback Error: invalid type passed");
     }
-    this._externalImageChangedCallback = callback;
+    this._externalImageChangedCallbacks.push(callback);
   }
 
   getCurrentImageTitle() {
@@ -304,9 +304,9 @@ class Gallery {
     if (!isUndefined(this._titleContainer)) {
       this._updateTitle(title);
     }
-    if (!isUndefined(this._externalImageChangedCallback)) {
-      this._externalImageChangedCallback(id);
-    }
+    this._externalImageChangedCallbacks.forEach((callback) => {
+      callback(id);
+    });
   };
 
   _fullscreenChangedCallback = (fullscreen) => {
