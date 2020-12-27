@@ -48,51 +48,52 @@
 .mibreit-slideshow-next {
   position: absolute;
   z-index: 12;
-  background-image: url("../images/next-image.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  width: 2rem;
-  height: 3rem;
-  right: 0.25rem;
-  top: 45%;
+  top: 50%;
+  right: 0rem;
   opacity: 0;
+}
+
+.mibreit-slideshow-next svg {  
+  width: 3rem;
+  height: 3rem;
+  margin-top: -1.5rem;
 }
 
 .mibreit-slideshow-previous {
   position: absolute;
   z-index: 12;
-  background-image: url("../images/previous-image.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  width: 2rem;
-  height: 3rem;
-  left: 0.25rem;
-  top: 45%;
+  top: 50%;
   opacity: 0;
 }
 
-.mibreit-thumbview-previous {
-  width: 1.25rem;
-  max-width: 20px;
-  height: 1.25rem;
-  max-height: 20px;
+.mibreit-slideshow-previous svg {
+  transform: scaleX(-1);
+  width: 3rem;
+  height: 3rem;
+  margin-top: -1.5rem;
+}
+
+.mibreit-thumbview-previous {      
   margin-right: 0.5rem;
   margin-left: 0.5rem;
-  background-image: url("../images/previous.png");
-  background-size: cover;
+}
+
+.mibreit-thumbview-previous svg {
+  transform: scaleX(-1);
+  width: 3rem;
+  height: 3rem;  
+  fill:#727f88;
 }
 
 .mibreit-thumbview-next {
-  width: 1.25rem;
-  max-width: 20px;
-  height: 1.25rem;
-  max-height: 20px;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
-  background-image: url("../images/next.png");
-  background-size: cover;
+}
+
+.mibreit-thumbview-next svg {  
+  width: 3rem;
+  height: 3rem;  
+  fill:#727f88;
 }
 
 .mibreit-regular-slideshow {
@@ -136,10 +137,6 @@
 .mibreit-enter-fullscreen-button {
   position: absolute;
   z-index: 12;
-  background-image: url("../images/fullscreen.png");
-  background-size: 2rem;
-  background-repeat: no-repeat;
-  background-position: center;
   width: 2rem;
   height: 2rem;
   right: 0.25rem;
@@ -150,13 +147,12 @@
 .mibreit-fullscreen > .exit-fullscreen {
   position: absolute;
   z-index: 12;
-  background-image: url("../images/exit-fullscreen.png");
-  background-size: 3rem;
-  background-repeat: no-repeat;
-  background-position: center;
   width: 3rem;
   height: 3rem;
-  opacity: 0.8;
   right: 1rem;
   top: 1rem;
+}
+
+.mibreit-fullscreen > .exit-fullscreen > svg {
+  opacity: 0.75;
 }

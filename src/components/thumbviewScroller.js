@@ -143,7 +143,8 @@ export default class ThumbviewScroller {
   }
 
   _resizeNeeded() {
-    const newVisibleWidth = $(this._thumbviewContainer).width() - parseFloat($(":root").css("font-size")) * 4.5; // leave space for buttons, which take 2.5rem        
+    const newVisibleWidth = $(this._thumbviewContainer).width() - parseFloat($(":root").css("font-size")) * 8; // leave space for buttons, which take 2.5rem  
+   
     if (this._newVisibleWidth !== newVisibleWidth) {
       this._newVisibleWidth = newVisibleWidth;
 

@@ -2,13 +2,7 @@ import "./css/mibreit-gallery.css";
 import "./css/mibreit-slideshow.css";
 import "./css/mibreit-thumbview.css";
 
-import "./images/next-image.png";
-import "./images/previous-image.png";
-import "./images/next.png";
-import "./images/previous.png";
 import "./images/image-placeholder-transparent.png";
-import "./images/exit-fullscreen.png";
-import "./images/fullscreen.png";
 
 import { isUndefined } from "./tools/typeChecks";
 

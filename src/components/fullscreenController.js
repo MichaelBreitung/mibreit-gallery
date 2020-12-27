@@ -11,6 +11,7 @@ import {
   FULLSCREEN_CLASS,
 } from "../tools/globals";
 import isElementPresent from "../tools/isElementPresent";
+import closeFullscreenSvg from "../images/close.svg";
 
 const WIDTH_100_CLASS = "width-100";
 const FLEX_GROW_1_CLASS = "flex-grow-1";
@@ -66,9 +67,10 @@ export default class FullscreenController {
       }
 
       $("body").append(
-        `<div class="${FULLSCREEN_CLASS.substr(1)}"><div class='exit-fullscreen'></div></div>`
+        `<div class="${FULLSCREEN_CLASS.substr(1)}"><div class='exit-fullscreen'>${closeFullscreenSvg}</div></div>`
       );
       $(".exit-fullscreen").click(this.toggleFullscreen);
+
       $(this._slideshowContainer).appendTo(FULLSCREEN_CLASS);
       $(this._slideshowContainer).addClass(WIDTH_100_CLASS);
       $(this._slideshowContainer).addClass(FLEX_GROW_1_CLASS);

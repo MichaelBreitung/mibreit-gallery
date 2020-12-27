@@ -18,6 +18,9 @@ import {
   THUMBVIEW_NEXT,
   THUMBVIEW_PREVIOUS,
 } from "../tools/globals";
+import fullscreenSvg from "../images/fullscreen.svg";
+import nextImage from "../images/nextImage.svg";
+import nextImages from "../images/nextImages.svg";
 
 // const
 const HOVER_ANIMATION_TIME = 400;
@@ -160,7 +163,7 @@ class Gallery {
   // private helpers
 
   _initFullscreen() {
-    $(this._slideshowContainer).append(`<div class="${ENTER_FULLSCREEN_BUTTON.substr(1)}"></div>`);
+    $(this._slideshowContainer).append(`<div class="${ENTER_FULLSCREEN_BUTTON.substr(1)}">${fullscreenSvg}</div>`);
 
     this._fullscreenEnterButton = $(`${this._slideshowContainer} ${ENTER_FULLSCREEN_BUTTON}`);
     const fullscreenController = new FullscreenController();
@@ -178,9 +181,9 @@ class Gallery {
 
   _initNavigationButtons() {
     // add previous and next buttons
-    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_NEXT.substr(1)}"></div>`);
+    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_NEXT.substr(1)}">${nextImage}</div>`);
     this._slideshowNext = $(`${this._slideshowContainer} ${SLIDESHOW_NEXT}`);
-    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_PREVIOUS.substr(1)}"></div>`);
+    $(this._slideshowContainer).append(`<div class="${SLIDESHOW_PREVIOUS.substr(1)}">${nextImage}</div>`);
     this._slideshowPrevious = $(`${this._slideshowContainer} ${SLIDESHOW_PREVIOUS}`);
   }
 
@@ -191,9 +194,9 @@ class Gallery {
       this._mibreitThumbManager.init(this._thumbviewContainer, this._thumbClickCallback);
 
       // add previous and next buttons and hook up events
-      $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}"></div>`);
+      $(this._thumbviewContainer).prepend(`<div class="${THUMBVIEW_PREVIOUS.substr(1)}">${nextImages}</div>`);
       this._thumbviewPrevious = $(`${this._thumbviewContainer} ${THUMBVIEW_PREVIOUS}`);
-      $(this._thumbviewContainer).append(`<div class="${THUMBVIEW_NEXT.substr(1)}"></div>`);
+      $(this._thumbviewContainer).append(`<div class="${THUMBVIEW_NEXT.substr(1)}">${nextImages}</div>`);
       this._thumbviewNext = $(`${this._thumbviewContainer} ${THUMBVIEW_NEXT}`);
 
       $(this._thumbviewPrevious).bind("click", this._scrollLeftCallback);
@@ -227,7 +230,7 @@ class Gallery {
     if (this._fullscreenEnterButton) {
       $(this._fullscreenEnterButton).animate(
         {
-          opacity: show && !this._fullscreenController.isFullscreen() ? 0.4 : 0.0,
+          opacity: show && !this._fullscreenController.isFullscreen() ? 0.5 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
@@ -238,7 +241,7 @@ class Gallery {
     if (!isUndefined(this._slideshowNext)) {
       $(this._slideshowNext).animate(
         {
-          opacity: show ? 0.4 : 0.0,
+          opacity: show ? 0.5 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
@@ -246,7 +249,7 @@ class Gallery {
     if (!isUndefined(this._slideshowPrevious)) {
       $(this._slideshowPrevious).animate(
         {
-          opacity: show ? 0.4 : 0.0,
+          opacity: show ? 0.5 : 0.0,
         },
         HOVER_ANIMATION_TIME
       );
