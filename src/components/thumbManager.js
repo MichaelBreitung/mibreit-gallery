@@ -86,8 +86,8 @@ export default class ThumbManager {
   }
 
   _setScaleModeForThumbs() {
-    const thumbWidth = this._thumbContainers.innerWidth();
-    const thumbHeight = this._thumbContainers.innerHeight();
+    const thumbWidth = this._thumbContainers.width();
+    const thumbHeight = this._thumbContainers.height();
 
     if (this._currentThumbHeight !== thumbHeight || this._currentThumbWidth !== thumbWidth) {
 

@@ -12,18 +12,23 @@
 
 .mibreit-thumbElement {
     position: relative;
-    padding: 0;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+    padding: 0.5rem;
     width: 5rem;
     height: 5rem;
-    overflow: hidden;
     flex-shrink: 0;
-    border: solid;
-    border-width: 1px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+}
+
+.mibreit-thumbElement:hover {
+    transform: scale(1.1);
+}
+
+.mibreit-thumbElement .mibreit-center-box {
+    border: solid;
+    border-width: 1px;
+    overflow: hidden;
 }
 
 .mibreit-thumbElement img {
