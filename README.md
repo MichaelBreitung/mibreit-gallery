@@ -1,5 +1,11 @@
 # mibreitGallery
 
+## Deprecated
+
+It is advised to use [mibreit-gallery-ts](https://github.com/MichaelBreitung/mibreit-gallery-ts) instead of this gallery. The TS version is a complete rewrite of this gallery and it provides the same functionality without the JQuery dependency. The TS version will be further extended in the future.
+
+This version will no longer be extended. It is fully functional and has no known bugs.
+
 ## About
 
 I've written this gallery for my homepage www.mibreit-photo.com to have an easy way to show my photos. From the beginning my goal with the gallery was to have an easily extensible code base and the possibility to change the styles simply via CSS.
